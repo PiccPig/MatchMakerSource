@@ -1,0 +1,15 @@
+C:\Users\cc133099\source\repos\NEA\NEA\bin\Debug\netcoreapp3.1\NEA.exe
+C:\Users\cc133099\source\repos\NEA\NEA\bin\Debug\netcoreapp3.1\NEA.deps.json
+C:\Users\cc133099\source\repos\NEA\NEA\bin\Debug\netcoreapp3.1\NEA.runtimeconfig.json
+C:\Users\cc133099\source\repos\NEA\NEA\bin\Debug\netcoreapp3.1\NEA.runtimeconfig.dev.json
+C:\Users\cc133099\source\repos\NEA\NEA\bin\Debug\netcoreapp3.1\NEA.dll
+C:\Users\cc133099\source\repos\NEA\NEA\bin\Debug\netcoreapp3.1\NEA.pdb
+C:\Users\cc133099\source\repos\NEA\NEA\obj\Debug\netcoreapp3.1\NEA.csproj.AssemblyReference.cache
+C:\Users\cc133099\source\repos\NEA\NEA\obj\Debug\netcoreapp3.1\NEA.MatchMaker.resources
+C:\Users\cc133099\source\repos\NEA\NEA\obj\Debug\netcoreapp3.1\NEA.csproj.GenerateResource.cache
+C:\Users\cc133099\source\repos\NEA\NEA\obj\Debug\netcoreapp3.1\NEA.AssemblyInfoInputs.cache
+C:\Users\cc133099\source\repos\NEA\NEA\obj\Debug\netcoreapp3.1\NEA.AssemblyInfo.cs
+C:\Users\cc133099\source\repos\NEA\NEA\obj\Debug\netcoreapp3.1\NEA.csproj.CoreCompileInputs.cache
+C:\Users\cc133099\source\repos\NEA\NEA\obj\Debug\netcoreapp3.1\NEA.dll
+C:\Users\cc133099\source\repos\NEA\NEA\obj\Debug\netcoreapp3.1\NEA.pdb
+C:\Users\cc133099\source\repos\NEA\NEA\obj\Debug\netcoreapp3.1\NEA.genruntimeconfig.cache

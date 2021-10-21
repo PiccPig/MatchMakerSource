@@ -12,11 +12,13 @@ namespace NEA
 {
     public partial class MatchMaker : Form
     {
-        private int gridLength = 20;
+        private int gridLength = 20; //   initial size of grid
         private int gridWidth = 9;
         private NoteButton[,] notes;
-        private int gridSizeHorizontal = 270;
+        private int gridSizeHorizontal = 270; //initial pixel dimensions of the grid
         private int gridSizeVertical = 600;
+
+        
 
         public MatchMaker()
         {
@@ -42,8 +44,7 @@ namespace NEA
                     {
                         Location = new Point((i * buttonWidth) + sideBuffer, (j * buttonHeight) + topBuffer),
                         Size = new Size(buttonWidth, buttonHeight),
-                        BackColor = Color.Gray,
-                        ForeColor = Color.DarkGray,
+                        BackColor = Color.Transparent,
                         Colour = 0
                     };
                     notes[i, j].Click += new EventHandler(NoteButton_Click);
@@ -55,7 +56,8 @@ namespace NEA
 
         private void NoteButton_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            NoteButton b = (NoteButton)sender;
+            b.ChangeColour();
         }
 
         private void SizeSubmitButton_Click(object sender, EventArgs e)

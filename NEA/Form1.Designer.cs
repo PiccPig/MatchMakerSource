@@ -37,6 +37,7 @@ namespace NEA
             this.LengthUpDown = new System.Windows.Forms.NumericUpDown();
             this.WidthUpDown = new System.Windows.Forms.NumericUpDown();
             this.SizeSubmitButton = new System.Windows.Forms.Button();
+            this.ClearButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.LengthUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthUpDown)).BeginInit();
             this.SuspendLayout();
@@ -120,11 +121,22 @@ namespace NEA
             this.SizeSubmitButton.UseVisualStyleBackColor = true;
             this.SizeSubmitButton.Click += new System.EventHandler(this.SizeSubmitButton_Click);
             // 
+            // ClearButton
+            // 
+            this.ClearButton.Location = new System.Drawing.Point(373, 25);
+            this.ClearButton.Name = "ClearButton";
+            this.ClearButton.Size = new System.Drawing.Size(75, 23);
+            this.ClearButton.TabIndex = 6;
+            this.ClearButton.Text = "Clear";
+            this.ClearButton.UseVisualStyleBackColor = true;
+            this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
+            // 
             // MatchMaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(484, 661);
+            this.Controls.Add(this.ClearButton);
             this.Controls.Add(this.SizeSubmitButton);
             this.Controls.Add(this.WidthUpDown);
             this.Controls.Add(this.LengthUpDown);
@@ -154,6 +166,7 @@ namespace NEA
         private System.Windows.Forms.NumericUpDown LengthUpDown;
         private System.Windows.Forms.NumericUpDown WidthUpDown;
         private System.Windows.Forms.Button SizeSubmitButton;
+        private System.Windows.Forms.Button ClearButton;
     }
 }
 

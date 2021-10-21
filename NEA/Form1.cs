@@ -18,7 +18,9 @@ namespace NEA
         private int gridSizeHorizontal = 270; //initial pixel dimensions of the grid
         private int gridSizeVertical = 600;
 
-        
+        private bool leftMouseToggle = false;
+        private bool rightMouseToggle = false;
+        private bool middleMouseToggle = false;
 
         public MatchMaker()
         {
@@ -28,7 +30,7 @@ namespace NEA
 
         public void MatchMaker_Load()
         {
-            CreateGrid(gridLength, gridWidth, gridSizeVertical, gridSizeHorizontal,50,50);
+            CreateGrid(gridLength, gridWidth, gridSizeVertical, gridSizeHorizontal, 50, 50);
         }
 
         public void CreateGrid(int gridLength, int gridWidth, int gridSizeVertical, int gridSizeHorizontal, int topBuffer, int sideBuffer)
@@ -36,7 +38,7 @@ namespace NEA
             int buttonWidth = gridSizeHorizontal / gridWidth;
             int buttonHeight = gridSizeVertical / gridLength;
             notes = new NoteButton[gridWidth, gridLength];
-            for(int j = 0 ; j < gridLength ; j++ )
+            for (int j = 0; j < gridLength; j++)
             {
                 for (int i = 0; i < gridWidth; i++)
                 {
@@ -47,22 +49,65 @@ namespace NEA
                         BackColor = Color.Transparent,
                         Colour = 0
                     };
-                    notes[i, j].Click += new EventHandler(NoteButton_Click);
+                    notes[i, j].MouseDown += new MouseEventHandler(ClickHandler);
+                    notes[i, j].MouseEnter += new EventHandler(NoteButton_MouseEnter);
                     Controls.Add(notes[i, j]);
-                    
+
                 }
             }
         }
 
-        private void NoteButton_Click(object sender, EventArgs e)
+        private void NoteButton_MouseEnter(object sender, EventArgs e)
         {
             NoteButton b = (NoteButton)sender;
-            b.ChangeColour();
+            if (leftMouseToggle)
+            {
+                b.ChangeColour(1);
+            }
+            if(rightMouseToggle)
+            {
+                b.ChangeColour(2);
+            }
+            if(middleMouseToggle)
+            {
+                b.ChangeColour(0);
+            }
         }
 
         private void SizeSubmitButton_Click(object sender, EventArgs e)
         {
 
         }
-    }
+
+        private void ClickHandler(object sender, MouseEventArgs e)
+        {
+            NoteButton b = (NoteButton)sender;
+            if (e.Button == MouseButtons.Left)
+            {
+                leftMouseToggle = !leftMouseToggle;
+                rightMouseToggle = false;
+                middleMouseToggle = false;
+                b.ChangeColour(1);
+            }
+            if(e.Button == MouseButtons.Right)
+            {
+                rightMouseToggle = !rightMouseToggle;
+                leftMouseToggle = false;
+                middleMouseToggle = false;
+                b.ChangeColour(2);
+            }
+            if(e.Button == MouseButtons.Middle)
+            {
+                middleMouseToggle = !middleMouseToggle;
+                leftMouseToggle = false;
+                rightMouseToggle = false;
+                b.ChangeColour(0);
+            }
+        }
+
+        private void ClearButton_Click(object sender, EventArgs e)
+        {
+
+        }
+    }       
 }

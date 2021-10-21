@@ -17,9 +17,9 @@ namespace NEA
         private Color transparent = Color.FromArgb(0, 0, 0, 0);
         public int Colour { get; set; }
 
-        public void ChangeColour()
+        public void ChangeColour(int c)
         {
-            this.Colour = (this.Colour + 1) % 3;
+            /*this.Colour = (this.Colour + 1) % 3;
             switch (this.Colour)
             {
                 case 1:
@@ -31,6 +31,19 @@ namespace NEA
                 default:
                     this.BackColor = transparent;
                     break;
+            }*/
+            switch (c)
+            {
+                case 1:
+                    this.BackColor = colour1;
+                    break;
+                case 2:
+                    this.BackColor = colour2;
+                    break;
+                default:
+                    this.BackColor = transparent;
+                    break;
+            
             }
             this.Invalidate();
         }

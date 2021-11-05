@@ -38,6 +38,10 @@ namespace NEA
             this.WidthUpDown = new System.Windows.Forms.NumericUpDown();
             this.SizeSubmitButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
+            this.ShiftUpButton = new System.Windows.Forms.Button();
+            this.ShiftLeftButton = new System.Windows.Forms.Button();
+            this.ShiftDownButton = new System.Windows.Forms.Button();
+            this.ShiftRightButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.LengthUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthUpDown)).BeginInit();
             this.SuspendLayout();
@@ -123,19 +127,63 @@ namespace NEA
             // 
             // ClearButton
             // 
-            this.ClearButton.Location = new System.Drawing.Point(373, 25);
+            this.ClearButton.Location = new System.Drawing.Point(397, 25);
             this.ClearButton.Name = "ClearButton";
             this.ClearButton.Size = new System.Drawing.Size(75, 23);
             this.ClearButton.TabIndex = 6;
-            this.ClearButton.Text = "Clear";
+            this.ClearButton.Text = "Clear All";
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
+            // 
+            // ShiftUpButton
+            // 
+            this.ShiftUpButton.Location = new System.Drawing.Point(327, 3);
+            this.ShiftUpButton.Name = "ShiftUpButton";
+            this.ShiftUpButton.Size = new System.Drawing.Size(24, 23);
+            this.ShiftUpButton.TabIndex = 7;
+            this.ShiftUpButton.Text = "↑";
+            this.ShiftUpButton.UseVisualStyleBackColor = true;
+            this.ShiftUpButton.Click += new System.EventHandler(this.ShiftButton_Click);
+            // 
+            // ShiftLeftButton
+            // 
+            this.ShiftLeftButton.Location = new System.Drawing.Point(297, 32);
+            this.ShiftLeftButton.Name = "ShiftLeftButton";
+            this.ShiftLeftButton.Size = new System.Drawing.Size(24, 23);
+            this.ShiftLeftButton.TabIndex = 8;
+            this.ShiftLeftButton.Text = "←";
+            this.ShiftLeftButton.UseVisualStyleBackColor = true;
+            this.ShiftLeftButton.Click += new System.EventHandler(this.ShiftButton_Click);
+            // 
+            // ShiftDownButton
+            // 
+            this.ShiftDownButton.Location = new System.Drawing.Point(327, 32);
+            this.ShiftDownButton.Name = "ShiftDownButton";
+            this.ShiftDownButton.Size = new System.Drawing.Size(24, 23);
+            this.ShiftDownButton.TabIndex = 9;
+            this.ShiftDownButton.Text = "↓";
+            this.ShiftDownButton.UseVisualStyleBackColor = true;
+            this.ShiftDownButton.Click += new System.EventHandler(this.ShiftButton_Click);
+            // 
+            // ShiftRightButton
+            // 
+            this.ShiftRightButton.Location = new System.Drawing.Point(357, 32);
+            this.ShiftRightButton.Name = "ShiftRightButton";
+            this.ShiftRightButton.Size = new System.Drawing.Size(24, 23);
+            this.ShiftRightButton.TabIndex = 10;
+            this.ShiftRightButton.Text = "→";
+            this.ShiftRightButton.UseVisualStyleBackColor = true;
+            this.ShiftRightButton.Click += new System.EventHandler(this.ShiftButton_Click);
             // 
             // MatchMaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 661);
+            this.ClientSize = new System.Drawing.Size(484, 681);
+            this.Controls.Add(this.ShiftRightButton);
+            this.Controls.Add(this.ShiftDownButton);
+            this.Controls.Add(this.ShiftLeftButton);
+            this.Controls.Add(this.ShiftUpButton);
             this.Controls.Add(this.ClearButton);
             this.Controls.Add(this.SizeSubmitButton);
             this.Controls.Add(this.WidthUpDown);
@@ -167,6 +215,10 @@ namespace NEA
         private System.Windows.Forms.NumericUpDown WidthUpDown;
         private System.Windows.Forms.Button SizeSubmitButton;
         private System.Windows.Forms.Button ClearButton;
+        private System.Windows.Forms.Button ShiftUpButton;
+        private System.Windows.Forms.Button ShiftLeftButton;
+        private System.Windows.Forms.Button ShiftDownButton;
+        private System.Windows.Forms.Button ShiftRightButton;
     }
 }
 

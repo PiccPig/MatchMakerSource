@@ -30,7 +30,7 @@ namespace NEA
 
         public void MatchMaker_Load()
         {
-            CreateGrid(gridLength, gridWidth, gridSizeVertical, gridSizeHorizontal, 50, 50);
+            CreateGrid(gridLength, gridWidth, gridSizeVertical, gridSizeHorizontal, 70, 50);
         }
 
         public void CreateGrid(int gridLength, int gridWidth, int gridSizeVertical, int gridSizeHorizontal, int topBuffer, int sideBuffer)
@@ -57,7 +57,11 @@ namespace NEA
             }
         }
 
-        private void NoteButton_MouseEnter(object sender, EventArgs e)
+        /* Triggered when the mouse hovers over a button:
+         * if LMouse is toggled, change button to colour 1
+         * if RMouse is toggled, change button to colour 2
+         * if MMouse is toggled, clear the colour.            */
+        private void NoteButton_MouseEnter(object sender, EventArgs e) 
         {
             NoteButton b = (NoteButton)sender;
             if (leftMouseToggle)
@@ -79,6 +83,12 @@ namespace NEA
 
         }
 
+        /* Triggered when a NoteButton is clicked:
+         * If LMouse was clicked, disable both RMouse and MMouse toggles:
+            * If LMouse was already toggled, disable it too. Else, enable.
+         * Likewise for RMouse and MMouse.
+         * Then, change the colour of that button to the corresponding colour for the mouse button clicked.
+        */
         private void ClickHandler(object sender, MouseEventArgs e)
         {
             NoteButton b = (NoteButton)sender;
@@ -108,6 +118,28 @@ namespace NEA
         private void ClearButton_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void ShiftButton_Click(object sender, EventArgs e)
+        {
+            NoteButton b = sender as NoteButton;
+            switch(b.Name)
+            {
+                case "ShiftUpButton":
+                    ShiftNotes(-1, 0);
+                    break;
+                case "ShiftDownButton":
+                    ShiftNotes(1, 0);
+                    break;
+                case "ShiftLeftButton":
+                    ShiftNotes(0, -1);
+                    break;
+                case "ShiftRightButton":
+                    ShiftNotes(0, 1);
+                    break;
+                default:
+                    throw new ArgumentException("Sender not a shift button?");
+            }
         }
     }       
 }

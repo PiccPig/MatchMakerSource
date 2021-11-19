@@ -42,14 +42,20 @@ namespace NEA
             this.ShiftLeftButton = new System.Windows.Forms.Button();
             this.ShiftDownButton = new System.Windows.Forms.Button();
             this.ShiftRightButton = new System.Windows.Forms.Button();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.LengthUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthUpDown)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // SizeLabel
             // 
             this.SizeLabel.AutoSize = true;
-            this.SizeLabel.Location = new System.Drawing.Point(12, 29);
+            this.SizeLabel.Location = new System.Drawing.Point(15, 52);
             this.SizeLabel.Name = "SizeLabel";
             this.SizeLabel.Size = new System.Drawing.Size(30, 15);
             this.SizeLabel.TabIndex = 0;
@@ -58,7 +64,7 @@ namespace NEA
             // LengthLabel
             // 
             this.LengthLabel.AutoSize = true;
-            this.LengthLabel.Location = new System.Drawing.Point(54, 3);
+            this.LengthLabel.Location = new System.Drawing.Point(57, 26);
             this.LengthLabel.Name = "LengthLabel";
             this.LengthLabel.Size = new System.Drawing.Size(47, 15);
             this.LengthLabel.TabIndex = 1;
@@ -67,7 +73,7 @@ namespace NEA
             // WidthLabel
             // 
             this.WidthLabel.AutoSize = true;
-            this.WidthLabel.Location = new System.Drawing.Point(115, 2);
+            this.WidthLabel.Location = new System.Drawing.Point(118, 25);
             this.WidthLabel.Name = "WidthLabel";
             this.WidthLabel.Size = new System.Drawing.Size(42, 15);
             this.WidthLabel.TabIndex = 2;
@@ -75,7 +81,7 @@ namespace NEA
             // 
             // LengthUpDown
             // 
-            this.LengthUpDown.Location = new System.Drawing.Point(54, 27);
+            this.LengthUpDown.Location = new System.Drawing.Point(57, 50);
             this.LengthUpDown.Minimum = new decimal(new int[] {
             1,
             0,
@@ -98,7 +104,7 @@ namespace NEA
             0,
             0,
             0});
-            this.WidthUpDown.Location = new System.Drawing.Point(115, 27);
+            this.WidthUpDown.Location = new System.Drawing.Point(118, 50);
             this.WidthUpDown.Minimum = new decimal(new int[] {
             1,
             0,
@@ -113,11 +119,10 @@ namespace NEA
             0,
             0,
             0});
-            this.WidthUpDown.ValueChanged += new System.EventHandler(this.WidthUpDown_ValueChanged);
             // 
             // SizeSubmitButton
             // 
-            this.SizeSubmitButton.Location = new System.Drawing.Point(197, 25);
+            this.SizeSubmitButton.Location = new System.Drawing.Point(200, 48);
             this.SizeSubmitButton.Name = "SizeSubmitButton";
             this.SizeSubmitButton.Size = new System.Drawing.Size(75, 23);
             this.SizeSubmitButton.TabIndex = 5;
@@ -127,7 +132,7 @@ namespace NEA
             // 
             // ClearButton
             // 
-            this.ClearButton.Location = new System.Drawing.Point(397, 25);
+            this.ClearButton.Location = new System.Drawing.Point(400, 48);
             this.ClearButton.Name = "ClearButton";
             this.ClearButton.Size = new System.Drawing.Size(75, 23);
             this.ClearButton.TabIndex = 6;
@@ -137,7 +142,7 @@ namespace NEA
             // 
             // ShiftUpButton
             // 
-            this.ShiftUpButton.Location = new System.Drawing.Point(327, 3);
+            this.ShiftUpButton.Location = new System.Drawing.Point(330, 26);
             this.ShiftUpButton.Name = "ShiftUpButton";
             this.ShiftUpButton.Size = new System.Drawing.Size(24, 23);
             this.ShiftUpButton.TabIndex = 7;
@@ -147,7 +152,7 @@ namespace NEA
             // 
             // ShiftLeftButton
             // 
-            this.ShiftLeftButton.Location = new System.Drawing.Point(297, 32);
+            this.ShiftLeftButton.Location = new System.Drawing.Point(300, 55);
             this.ShiftLeftButton.Name = "ShiftLeftButton";
             this.ShiftLeftButton.Size = new System.Drawing.Size(24, 23);
             this.ShiftLeftButton.TabIndex = 8;
@@ -157,7 +162,7 @@ namespace NEA
             // 
             // ShiftDownButton
             // 
-            this.ShiftDownButton.Location = new System.Drawing.Point(327, 32);
+            this.ShiftDownButton.Location = new System.Drawing.Point(330, 55);
             this.ShiftDownButton.Name = "ShiftDownButton";
             this.ShiftDownButton.Size = new System.Drawing.Size(24, 23);
             this.ShiftDownButton.TabIndex = 9;
@@ -167,7 +172,7 @@ namespace NEA
             // 
             // ShiftRightButton
             // 
-            this.ShiftRightButton.Location = new System.Drawing.Point(357, 32);
+            this.ShiftRightButton.Location = new System.Drawing.Point(360, 55);
             this.ShiftRightButton.Name = "ShiftRightButton";
             this.ShiftRightButton.Size = new System.Drawing.Size(24, 23);
             this.ShiftRightButton.TabIndex = 10;
@@ -175,11 +180,51 @@ namespace NEA
             this.ShiftRightButton.UseVisualStyleBackColor = true;
             this.ShiftRightButton.Click += new System.EventHandler(this.ShiftButton_Click);
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(484, 24);
+            this.menuStrip1.TabIndex = 11;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newToolStripMenuItem,
+            this.openToolStripMenuItem,
+            this.saveToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // newToolStripMenuItem
+            // 
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newToolStripMenuItem.Text = "New";
+            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Text = "Open";
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
             // MatchMaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 681);
+            this.ClientSize = new System.Drawing.Size(484, 701);
             this.Controls.Add(this.ShiftRightButton);
             this.Controls.Add(this.ShiftDownButton);
             this.Controls.Add(this.ShiftLeftButton);
@@ -191,19 +236,18 @@ namespace NEA
             this.Controls.Add(this.WidthLabel);
             this.Controls.Add(this.LengthLabel);
             this.Controls.Add(this.SizeLabel);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(500, 500);
             this.Name = "MatchMaker";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.LengthUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthUpDown)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
-        }
-
-        private void WidthUpDown_ValueChanged(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion
@@ -219,6 +263,11 @@ namespace NEA
         private System.Windows.Forms.Button ShiftLeftButton;
         private System.Windows.Forms.Button ShiftDownButton;
         private System.Windows.Forms.Button ShiftRightButton;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
     }
 }
 

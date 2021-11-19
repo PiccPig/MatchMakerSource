@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace NEA
 {
-    public partial class MatchMaker : Form
+    public partial class MatchMaker : System.Windows.Forms.Form
     {
         private int gridLength = 20; //   initial size of grid
         private int gridWidth = 9;
@@ -30,9 +30,11 @@ namespace NEA
 
         public void MatchMaker_Load()
         {
-            CreateGrid(gridLength, gridWidth, gridSizeVertical, gridSizeHorizontal, 70, 50);
+            CreateGrid(gridLength, gridWidth, gridSizeVertical, gridSizeHorizontal, 90, 50);
         }
-
+        /* 
+         * 
+         */
         public void CreateGrid(int gridLength, int gridWidth, int gridSizeVertical, int gridSizeHorizontal, int topBuffer, int sideBuffer)
         {
             int buttonWidth = gridSizeHorizontal / gridWidth;
@@ -140,6 +142,21 @@ namespace NEA
                 default:
                     throw new ArgumentException("Sender not a shift button?");
             }
+        }
+
+        private void ShiftNotes(int down, int right)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }       
 }

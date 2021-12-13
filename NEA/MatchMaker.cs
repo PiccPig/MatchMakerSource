@@ -30,16 +30,34 @@ namespace NEA
 
         public void MatchMaker_Load()
         {
-            CreateGrid(gridLength, gridWidth, gridSizeVertical, gridSizeHorizontal, 90, 50);
+            notes = new NoteButton[gridWidth, gridLength];
+            notes = CreateBlankGrid(notes);
+            ShowGrid(90, 50, notes);
         }
+
+        private NoteButton[,] CreateBlankGrid(NoteButton[,] notes)
+        {
+            for (int j = 0; j < gridLength; j++)
+            {
+                for (int i = 0; i < gridWidth; i++)
+                {
+                    notes[i, j] = new NoteButton()
+                    {
+                        BackColor = Color.Transparent,
+                        Colour = 0
+                    };
+                }
+            }
+            return notes;
+        }
+
         /* 
-         * 
-         */
-        public void CreateGrid(int gridLength, int gridWidth, int gridSizeVertical, int gridSizeHorizontal, int topBuffer, int sideBuffer)
+* 
+*/
+        public void ShowGrid(int topBuffer, int sideBuffer, NoteButton[,] notes)
         {
             int buttonWidth = gridSizeHorizontal / gridWidth;
             int buttonHeight = gridSizeVertical / gridLength;
-            notes = new NoteButton[gridWidth, gridLength];
             for (int j = 0; j < gridLength; j++)
             {
                 for (int i = 0; i < gridWidth; i++)
@@ -63,18 +81,18 @@ namespace NEA
          * if LMouse is toggled, change button to colour 1
          * if RMouse is toggled, change button to colour 2
          * if MMouse is toggled, clear the colour.            */
-        private void NoteButton_MouseEnter(object sender, EventArgs e) 
+        private void NoteButton_MouseEnter(object sender, EventArgs e)
         {
             NoteButton b = (NoteButton)sender;
             if (leftMouseToggle)
             {
                 b.ChangeColour(1);
             }
-            if(rightMouseToggle)
+            if (rightMouseToggle)
             {
                 b.ChangeColour(2);
             }
-            if(middleMouseToggle)
+            if (middleMouseToggle)
             {
                 b.ChangeColour(0);
             }
@@ -101,14 +119,14 @@ namespace NEA
                 middleMouseToggle = false;
                 b.ChangeColour(1);
             }
-            if(e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
             {
                 rightMouseToggle = !rightMouseToggle;
                 leftMouseToggle = false;
                 middleMouseToggle = false;
                 b.ChangeColour(2);
             }
-            if(e.Button == MouseButtons.Middle)
+            if (e.Button == MouseButtons.Middle)
             {
                 middleMouseToggle = !middleMouseToggle;
                 leftMouseToggle = false;
@@ -125,7 +143,7 @@ namespace NEA
         private void ShiftButton_Click(object sender, EventArgs e)
         {
             NoteButton b = sender as NoteButton;
-            switch(b.Name)
+            switch (b.Name)
             {
                 case "ShiftUpButton":
                     ShiftNotes(-1, 0);
@@ -151,12 +169,50 @@ namespace NEA
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            //open file dialog()
+            string encodedGrid = EncodeNoteGrid(notes);
         }
-    }       
+
+        /* Encodes 
+         * 
+         */
+        private string EncodeNoteGrid(NoteButton[,] notes)
+        {
+            string encodedGrid = "";
+            encodedGrid += $"{gridWidth:000}{gridLength:000}"; //Padded to 3 spaces with leading zeroes
+            encodedGrid += RLE(notes);
+            return "";
+        }
+
+        private string RLE(NoteButton[,] notes)
+        {
+            string rle = "";
+            int currentColour = notes[0, 0].Colour;
+            int currentRun = 1;
+            for (int i = 0; i < gridWidth; i++)
+            {
+                for (int j = i == 0 ? 1 : 0; j < gridLength; j++)//If i is 0 (on the very first square) set j to 1 as 0,0 has already been accounted for.
+                {
+                    if (notes[i, j].Colour == currentColour && currentRun < 9)
+                    {
+                        currentRun++;
+                    }
+                    else
+                    {
+                        rle += $"{currentColour}{currentRun}";
+                        currentColour = notes[0, 0].Colour;
+                        currentRun = 1;
+                    }
+                }
+            }
+            rle += $"{currentColour}{currentRun}";
+            return rle;
+        }
+    }
 }
+

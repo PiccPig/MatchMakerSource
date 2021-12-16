@@ -36,12 +36,15 @@ namespace NEA
             {
                 case 1:
                     this.BackColor = colour1;
+                    this.Colour = 1;
                     break;
                 case 2:
                     this.BackColor = colour2;
+                    this.Colour = 2;
                     break;
                 default:
                     this.BackColor = transparent;
+                    this.Colour = 0;
                     break;
             
             }

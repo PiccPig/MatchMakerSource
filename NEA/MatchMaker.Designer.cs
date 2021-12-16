@@ -212,6 +212,7 @@ namespace NEA
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
@@ -240,7 +241,7 @@ namespace NEA
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(500, 500);
             this.Name = "MatchMaker";
-            this.Text = "Form1";
+            this.Text = "MatchMaker (Unsaved)";
             ((System.ComponentModel.ISupportInitialize)(this.LengthUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthUpDown)).EndInit();
             this.menuStrip1.ResumeLayout(false);

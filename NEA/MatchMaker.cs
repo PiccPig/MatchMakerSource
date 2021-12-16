@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,8 @@ namespace NEA
         private NoteButton[,] notes;
         private int gridSizeHorizontal = 270; //initial pixel dimensions of the grid
         private int gridSizeVertical = 600;
+        private const int topBuffer = 90;
+        private const int sideBuffer = 50;
 
         private bool leftMouseToggle = false;
         private bool rightMouseToggle = false;
@@ -32,7 +35,7 @@ namespace NEA
         {
             notes = new NoteButton[gridWidth, gridLength];
             notes = CreateBlankGrid(notes);
-            ShowGrid(90, 50, notes);
+            ShowGrid(notes);
         }
 
         private NoteButton[,] CreateBlankGrid(NoteButton[,] notes)
@@ -52,9 +55,9 @@ namespace NEA
         }
 
         /* 
-* 
-*/
-        public void ShowGrid(int topBuffer, int sideBuffer, NoteButton[,] notes)
+         * 
+         */
+        public void ShowGrid(NoteButton[,] notes)
         {
             int buttonWidth = gridSizeHorizontal / gridWidth;
             int buttonHeight = gridSizeVertical / gridLength;
@@ -65,15 +68,21 @@ namespace NEA
                     notes[i, j] = new NoteButton()
                     {
                         Location = new Point((i * buttonWidth) + sideBuffer, (j * buttonHeight) + topBuffer),
-                        Size = new Size(buttonWidth, buttonHeight),
-                        BackColor = Color.Transparent,
-                        Colour = 0
+                        Size = new Size(buttonWidth, buttonHeight)
+
                     };
                     notes[i, j].MouseDown += new MouseEventHandler(ClickHandler);
                     notes[i, j].MouseEnter += new EventHandler(NoteButton_MouseEnter);
                     Controls.Add(notes[i, j]);
-
                 }
+            }
+        }
+
+        public void RemoveGrid()
+        {
+            foreach(NoteButton note in notes)
+            {
+                Controls.Remove(note);
             }
         }
 
@@ -111,6 +120,7 @@ namespace NEA
         */
         private void ClickHandler(object sender, MouseEventArgs e)
         {
+            if (Text[^1] != '*') Text += "*";
             NoteButton b = (NoteButton)sender;
             if (e.Button == MouseButtons.Left)
             {
@@ -172,24 +182,67 @@ namespace NEA
 
         }
 
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //open file dialog()
-            string encodedGrid = EncodeNoteGrid(notes);
+            OpenFileDialog openFileDialog1 = new OpenFileDialog()
+            {
+                InitialDirectory = @"C:\",
+                RestoreDirectory = true,
+                Title = "Open...",
+                DefaultExt = ".txt",
+                Filter = "txt files (*.txt)|*.txt",
+                CheckFileExists = true,
+                CheckPathExists = true
+            };
+            openFileDialog1.ShowDialog();
+            string file = "";
+            using(StreamReader sr = new StreamReader(openFileDialog1.FileName))
+            {
+                file = sr.ReadToEnd();
+                sr.Close();
+            }
+            NoteButton[,] newNotes = FileToGrid(file);
+            RemoveGrid();
+            notes = newNotes;
+            gridWidth = notes.GetLength(0); WidthUpDown.Value = gridWidth;
+            gridLength = notes.GetLength(1); LengthUpDown.Value = gridLength;
+            ShowGrid(notes);
         }
 
-        /* Encodes 
-         * 
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog()
+            {
+                InitialDirectory = @"C:\",
+                RestoreDirectory = true,
+                Title = "Save As...",
+                DefaultExt = ".txt",
+                Filter = "txt files(*.txt)|*.txt",
+                CheckFileExists = true,
+                CheckPathExists = true
+            };
+            saveFileDialog1.ShowDialog();
+            string encodedGrid = EncodeNoteGrid(notes);
+            using (StreamWriter sw = new StreamWriter(saveFileDialog1.FileName))
+            {
+                sw.Write(encodedGrid);
+                sw.Close();
+            }
+            Text = $"MatchMaker ({saveFileDialog1.FileName.Split('\\')[^1]})"; //changes form title to just the filename of the filepath
+        }
+
+        /* Encodes NoteButton grid into an RLE file:
+         * first 3 characters width, second 3 characters length, remaining characters in pairs of 2: first for run colour, second for run length.
          */
         private string EncodeNoteGrid(NoteButton[,] notes)
         {
             string encodedGrid = "";
             encodedGrid += $"{gridWidth:000}{gridLength:000}"; //Padded to 3 spaces with leading zeroes
-            encodedGrid += RLE(notes);
-            return "";
+            encodedGrid += GridToRLE(notes);
+            return encodedGrid;
         }
 
-        private string RLE(NoteButton[,] notes)
+        private string GridToRLE(NoteButton[,] notes) //See EncodeNoteGrid() for description - this is encoding the notes themselves and not the width/length.
         {
             string rle = "";
             int currentColour = notes[0, 0].Colour;
@@ -205,13 +258,37 @@ namespace NEA
                     else
                     {
                         rle += $"{currentColour}{currentRun}";
-                        currentColour = notes[0, 0].Colour;
+                        currentColour = notes[i, j].Colour;
                         currentRun = 1;
                     }
                 }
             }
             rle += $"{currentColour}{currentRun}";
             return rle;
+        }
+
+        private NoteButton[,] FileToGrid(string grid)
+        {
+            int width = int.Parse(grid[0..3]);
+            int length = int.Parse(grid[3..6]);
+            string RLE = grid[6..];
+            NoteButton[,] newNotes = new NoteButton[width, length];
+            newNotes = CreateBlankGrid(newNotes);
+
+            int currentCell = 0;
+            for(int i = 0; i < RLE.Length; i+=2)
+            {
+                int currentColour = int.Parse(RLE[i].ToString());
+                int currentRun = int.Parse(RLE[i+1].ToString());
+                for(int j = currentCell; j < currentCell + currentRun; j++)
+                {
+                    int X = currentCell % width;
+                    int Y = currentCell / length;
+                    newNotes[X, Y].ChangeColour(currentColour);
+                }
+                currentCell += currentRun;
+            }
+            return newNotes;
         }
     }
 }

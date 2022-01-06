@@ -34,24 +34,25 @@ namespace NEA
         public void MatchMaker_Load()
         {
             notes = new NoteButton[gridWidth, gridLength];
-            notes = CreateBlankGrid(notes);
+            notes = CreateBlankGrid(gridWidth, gridLength);
             ShowGrid(notes);
         }
 
-        private NoteButton[,] CreateBlankGrid(NoteButton[,] notes)
+        private NoteButton[,] CreateBlankGrid(int width, int length)
         {
-            for (int j = 0; j < gridLength; j++)
+            NoteButton[,] dummyGrid = new NoteButton[width, length];
+            for (int j = 0; j < length; j++)
             {
-                for (int i = 0; i < gridWidth; i++)
+                for (int i = 0; i < width; i++)
                 {
-                    notes[i, j] = new NoteButton()
+                    dummyGrid[i, j] = new NoteButton()
                     {
                         BackColor = Color.Transparent,
                         Colour = 0
                     };
                 }
             }
-            return notes;
+            return dummyGrid;
         }
 
         /* 
@@ -68,8 +69,9 @@ namespace NEA
                     notes[i, j] = new NoteButton()
                     {
                         Location = new Point((i * buttonWidth) + sideBuffer, (j * buttonHeight) + topBuffer),
-                        Size = new Size(buttonWidth, buttonHeight)
-
+                        Size = new Size(buttonWidth, buttonHeight),
+                        Colour = notes[i, j].Colour,
+                        BackColor = notes[i, j].BackColor
                     };
                     notes[i, j].MouseDown += new MouseEventHandler(ClickHandler);
                     notes[i, j].MouseEnter += new EventHandler(NoteButton_MouseEnter);
@@ -109,7 +111,36 @@ namespace NEA
 
         private void SizeSubmitButton_Click(object sender, EventArgs e)
         {
-
+            if(gridLength != LengthUpDown.Value || gridWidth != WidthUpDown.Value)
+            {
+                
+                int length = (int)LengthUpDown.Value;
+                int width = (int)WidthUpDown.Value;
+                if(length < gridLength || width < gridWidth)
+                {
+                    string message = "Making the grid smaller will result in losing some notes. Continue?";
+                    string title = "Warning";
+                    MessageBoxButtons buttons = MessageBoxButtons.OKCancel;
+                    DialogResult result = MessageBox.Show(message, title, buttons,MessageBoxIcon.None ,MessageBoxDefaultButton.Button2);
+                    if (result == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+                }
+                NoteButton[,] resizedGrid = CreateBlankGrid(width,length);
+                for(int j = 0; j < gridLength && j < length; j++)
+                {
+                    for(int i = 0; i < gridWidth && i < width; i++)
+                    {
+                        resizedGrid[i, j] = notes[i, j];
+                    }
+                }
+                RemoveGrid();
+                notes = resizedGrid;
+                gridLength = length;
+                gridWidth = width;
+                ShowGrid(notes);
+            }
         }
 
         /* Triggered when a NoteButton is clicked:
@@ -152,8 +183,7 @@ namespace NEA
 
         private void ShiftButton_Click(object sender, EventArgs e)
         {
-            NoteButton b = sender as NoteButton;
-            switch (b.Name)
+            switch (((Button)sender).Name)
             {
                 case "ShiftUpButton":
                     ShiftNotes(-1, 0);
@@ -174,7 +204,21 @@ namespace NEA
 
         private void ShiftNotes(int down, int right)
         {
-            throw new NotImplementedException();
+            NoteButton[,] dummyNotes = notes;
+            for(int j = 0; j < gridLength; j++)
+            {
+                if (down == -1) j++;
+                for(int i = 0; i < gridWidth; i++)
+                {
+                    if (right == -1) i++;
+                    int X = i + right;
+                    int Y = j + down;
+                    if(X < gridWidth && Y < gridLength && i < gridWidth && j < gridLength)
+                    {
+                        notes[X, Y].ChangeColour(dummyNotes[i, j].Colour);
+                    }
+                }
+            }
         }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
@@ -186,7 +230,6 @@ namespace NEA
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog()
             {
-                InitialDirectory = @"C:\",
                 RestoreDirectory = true,
                 Title = "Open...",
                 DefaultExt = ".txt",
@@ -218,11 +261,15 @@ namespace NEA
                 Title = "Save As...",
                 DefaultExt = ".txt",
                 Filter = "txt files(*.txt)|*.txt",
-                CheckFileExists = true,
+                CheckFileExists = false,
                 CheckPathExists = true
             };
             saveFileDialog1.ShowDialog();
             string encodedGrid = EncodeNoteGrid(notes);
+            if(!File.Exists(saveFileDialog1.FileName))
+            {
+                File.Create(saveFileDialog1.FileName);
+            }
             using (StreamWriter sw = new StreamWriter(saveFileDialog1.FileName))
             {
                 sw.Write(encodedGrid);
@@ -273,7 +320,7 @@ namespace NEA
             int length = int.Parse(grid[3..6]);
             string RLE = grid[6..];
             NoteButton[,] newNotes = new NoteButton[width, length];
-            newNotes = CreateBlankGrid(newNotes);
+            newNotes = CreateBlankGrid(width,length);
 
             int currentCell = 0;
             for(int i = 0; i < RLE.Length; i+=2)
@@ -282,8 +329,8 @@ namespace NEA
                 int currentRun = int.Parse(RLE[i+1].ToString());
                 for(int j = currentCell; j < currentCell + currentRun; j++)
                 {
-                    int X = currentCell % width;
-                    int Y = currentCell / length;
+                    int X = j / length;
+                    int Y = j % length;
                     newNotes[X, Y].ChangeColour(currentColour);
                 }
                 currentCell += currentRun;

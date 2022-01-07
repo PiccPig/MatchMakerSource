@@ -14,7 +14,7 @@ namespace NEA
     {
         private Color colour1 = Color.FromArgb(255, 67, 143, 250);  // default match colours
         private Color colour2 = Color.FromArgb(255, 247, 32, 32);
-        private Color transparent = Color.FromArgb(0, 0, 0, 0);
+        private Color transparent = Color.FromArgb(0, 255, 255, 255);
         public int Colour { get; set; }
 
         public void ChangeColour(int c)

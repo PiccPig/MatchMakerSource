@@ -204,7 +204,8 @@ namespace NEA
 
         private void ShiftNotes(int down, int right)
         {
-            NoteButton[,] dummyNotes = notes;
+            NoteButton[,] dummyNotes = new NoteButton[gridWidth,gridLength];
+            dummyNotes = notes;
             for(int j = 0; j < gridLength; j++)
             {
                 if (down == -1) j++;
@@ -215,7 +216,8 @@ namespace NEA
                     int Y = j + down;
                     if(X < gridWidth && Y < gridLength && i < gridWidth && j < gridLength)
                     {
-                        notes[X, Y].ChangeColour(dummyNotes[i, j].Colour);
+                        notes[X, Y].Colour = dummyNotes[i, j].Colour;
+                        notes[X, Y].BackColor = dummyNotes[i, j].BackColor;
                     }
                 }
             }

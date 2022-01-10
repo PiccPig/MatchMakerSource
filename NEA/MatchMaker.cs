@@ -58,8 +58,9 @@ namespace NEA
         /* 
          * 
          */
-        public void ShowGrid(NoteButton[,] notes)
+        public void ShowGrid(NoteButton[,] newnotes)
         {
+            notes = newnotes;
             int buttonWidth = gridSizeHorizontal / gridWidth;
             int buttonHeight = gridSizeVertical / gridLength;
             for (int j = 0; j < gridLength; j++)
@@ -118,11 +119,7 @@ namespace NEA
                 int width = (int)WidthUpDown.Value;
                 if(length < gridLength || width < gridWidth)
                 {
-                    string message = "Making the grid smaller will result in losing some notes. Continue?";
-                    string title = "Warning";
-                    MessageBoxButtons buttons = MessageBoxButtons.OKCancel;
-                    DialogResult result = MessageBox.Show(message, title, buttons,MessageBoxIcon.None ,MessageBoxDefaultButton.Button2);
-                    if (result == DialogResult.Cancel)
+                    if (SendWarning("Making the grid smaller will result in losing some notes. Continue?") == DialogResult.Cancel)
                     {
                         return;
                     }
@@ -141,6 +138,14 @@ namespace NEA
                 gridWidth = width;
                 ShowGrid(notes);
             }
+        }
+
+        private DialogResult SendWarning(string v)
+        {
+            string title = "Warning";
+            MessageBoxButtons buttons = MessageBoxButtons.OKCancel;
+            DialogResult result = MessageBox.Show(v, title, buttons, MessageBoxIcon.None, MessageBoxDefaultButton.Button2);
+            return DialogResult;
         }
 
         /* Triggered when a NoteButton is clicked:
@@ -178,7 +183,12 @@ namespace NEA
 
         private void ClearButton_Click(object sender, EventArgs e)
         {
-
+            if (SendWarning("This action cannot be undone. Continue?") == DialogResult.Cancel)
+            {
+                return;
+            }
+            RemoveGrid();
+            ShowGrid(CreateBlankGrid(gridWidth,gridLength));
         }
 
         private void ShiftButton_Click(object sender, EventArgs e)
@@ -186,15 +196,35 @@ namespace NEA
             switch (((Button)sender).Name)
             {
                 case "ShiftUpButton":
-                    ShiftNotes(-1, 0);
+                    if (CheckRowIsClear(0)) ShiftNotes(-1, 0);
+                    else //expand 1 down if there are notes at top - same as pushing up into a new row above
+                    {
+                        LengthUpDown.Value++;
+                        SizeSubmitButton_Click(SizeSubmitButton, null);
+                    }
                     break;
                 case "ShiftDownButton":
+                    if(!CheckRowIsClear(gridLength-1)) //Make room to shift down if there isnt any
+                    {
+                        LengthUpDown.Value++;
+                        SizeSubmitButton_Click(SizeSubmitButton, null);
+                    }
                     ShiftNotes(1, 0);
                     break;
                 case "ShiftLeftButton":
-                    ShiftNotes(0, -1);
+                    if(CheckColumnIsClear(0)) ShiftNotes(0, -1);
+                    else //expand 2 right if there are notes on left - since the grid is centered on the middle, this is the same as expanding 1 on both sides then shifting left
+                    {
+                        WidthUpDown.Value += 2;
+                        SizeSubmitButton_Click(SizeSubmitButton, null);
+                    }
                     break;
                 case "ShiftRightButton":
+                    if(!CheckRowIsClear(gridWidth-1)) // Make room to shift right if there isnt any
+                    {
+                        WidthUpDown.Value += 2;
+                        SizeSubmitButton_Click(SizeSubmitButton, null);
+                    }
                     ShiftNotes(0, 1);
                     break;
                 default:
@@ -202,26 +232,43 @@ namespace NEA
             }
         }
 
+        private bool CheckColumnIsClear(int column)
+        {
+            for (int i = 0; i < gridLength; i++)
+            {
+                if (notes[column, i].Colour != 0) return false;
+            }
+            return true;
+        }
+
+        private bool CheckRowIsClear(int row)
+        {
+            for(int i = 0; i < gridWidth; i++)
+            {
+                if (notes[i, row].Colour != 0) return false;
+            }
+            return true;
+        }
+
         private void ShiftNotes(int down, int right)
         {
-            NoteButton[,] dummyNotes = new NoteButton[gridWidth,gridLength];
-            dummyNotes = notes;
-            for(int j = 0; j < gridLength; j++)
+            NoteButton[,] dummyNotes = CreateBlankGrid(gridWidth,gridLength);
+            for(int j = down == -1 ? 1 : 0; j < gridLength; j++)
             {
-                if (down == -1) j++;
-                for(int i = 0; i < gridWidth; i++)
+                for(int i = right == -1 ? 1 : 0; i < gridWidth; i++)
                 {
-                    if (right == -1) i++;
                     int X = i + right;
                     int Y = j + down;
                     if(X < gridWidth && Y < gridLength && i < gridWidth && j < gridLength)
                     {
-                        notes[X, Y].Colour = dummyNotes[i, j].Colour;
-                        notes[X, Y].BackColor = dummyNotes[i, j].BackColor;
+                        dummyNotes[X, Y] = notes[i, j];
                     }
                 }
             }
+            RemoveGrid();
+            ShowGrid(dummyNotes);
         }
+
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {

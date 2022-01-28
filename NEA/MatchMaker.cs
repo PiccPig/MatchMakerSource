@@ -301,6 +301,9 @@ namespace NEA
             ShowGrid(notes);
         }
 
+        /* Creates a file dialog to pick which file to save the RLE to.
+         * Then writes the RLE string to the selected file, and changes the name of the form to the saved filename.
+         */
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog()
@@ -363,11 +366,12 @@ namespace NEA
             return rle;
         }
 
-        private NoteButton[,] FileToGrid(string grid)
+        // Converts the contents of the given .txt file as a string into a NoteButton[,], assigning each button the correct colour.
+        private NoteButton[,] FileToGrid(string grid) 
         {
-            int width = int.Parse(grid[0..3]);
-            int length = int.Parse(grid[3..6]);
-            string RLE = grid[6..];
+            int width = int.Parse(grid[0..3]); //First 3 characters are the width of the grid
+            int length = int.Parse(grid[3..6]); //2nd 3 characters are the length of the grid
+            string RLE = grid[6..]; //Remaining characters is RLE of the grid notes' colours.
             NoteButton[,] newNotes = new NoteButton[width, length];
             newNotes = CreateBlankGrid(width,length);
 
@@ -385,6 +389,12 @@ namespace NEA
                 currentCell += currentRun;
             }
             return newNotes;
+        }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e) //Opens the exporting form
+        {
+            ExportForm export = new ExportForm();
+            export.Show();
         }
     }
 }

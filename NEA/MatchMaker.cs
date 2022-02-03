@@ -38,6 +38,7 @@ namespace NEA
             ShowGrid(notes);
         }
 
+        //Creates a new NoteButton[,] with no colour.
         private NoteButton[,] CreateBlankGrid(int width, int length)
         {
             NoteButton[,] dummyGrid = new NoteButton[width, length];
@@ -55,9 +56,7 @@ namespace NEA
             return dummyGrid;
         }
 
-        /* 
-         * 
-         */
+        // Creates controls for an input note grid and displays them on the form.
         public void ShowGrid(NoteButton[,] newnotes)
         {
             notes = newnotes;
@@ -81,6 +80,7 @@ namespace NEA
             }
         }
 
+        //Removes all the NoteButton controls from the form.
         public void RemoveGrid()
         {
             foreach(NoteButton note in notes)
@@ -110,6 +110,10 @@ namespace NEA
             }
         }
 
+        /* Replaces the note grid with a new note grid of a new size.
+         * Sends a warning if the grid is being shrunk
+         * Does not do anything if the size UpDown values have not been changed.
+         */
         private void SizeSubmitButton_Click(object sender, EventArgs e)
         {
             if(gridLength != LengthUpDown.Value || gridWidth != WidthUpDown.Value)
@@ -140,6 +144,7 @@ namespace NEA
             }
         }
 
+        //Shows a general OK/Cancel warning dialog box with a specified message. Returns the result clicked by the user.
         private DialogResult SendWarning(string v)
         {
             string title = "Warning";
@@ -181,6 +186,7 @@ namespace NEA
             }
         }
 
+        //Replaces the note grid with an empty note grid
         private void ClearButton_Click(object sender, EventArgs e)
         {
             if (SendWarning("This action cannot be undone. Continue?") == DialogResult.Cancel)
@@ -191,6 +197,9 @@ namespace NEA
             ShowGrid(CreateBlankGrid(gridWidth,gridLength));
         }
 
+        /* Moves all notes in the direction the user pressed
+         * If a note were to be moved into a spot that is off the edge of the grid, then the grid is first expanded to make room for it.
+         */
         private void ShiftButton_Click(object sender, EventArgs e)
         {
             switch (((Button)sender).Name)

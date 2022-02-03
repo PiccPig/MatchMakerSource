@@ -41,6 +41,8 @@ namespace NEA
             this.GeneralToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.ExportButton = new System.Windows.Forms.Button();
             this.CancelButton = new System.Windows.Forms.Button();
+            this.DifficultyLabel = new System.Windows.Forms.Label();
+            this.DifficultyBox = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.CurrentBeatUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BeatsPerNoteUpDown)).BeginInit();
             this.SuspendLayout();
@@ -48,7 +50,7 @@ namespace NEA
             // ReplaceNotesCheckbox
             // 
             this.ReplaceNotesCheckbox.AutoSize = true;
-            this.ReplaceNotesCheckbox.Location = new System.Drawing.Point(34, 151);
+            this.ReplaceNotesCheckbox.Location = new System.Drawing.Point(34, 199);
             this.ReplaceNotesCheckbox.Name = "ReplaceNotesCheckbox";
             this.ReplaceNotesCheckbox.Size = new System.Drawing.Size(175, 19);
             this.ReplaceNotesCheckbox.TabIndex = 0;
@@ -124,16 +126,17 @@ namespace NEA
             // 
             // ExportButton
             // 
-            this.ExportButton.Location = new System.Drawing.Point(311, 191);
+            this.ExportButton.Location = new System.Drawing.Point(311, 230);
             this.ExportButton.Name = "ExportButton";
             this.ExportButton.Size = new System.Drawing.Size(75, 23);
             this.ExportButton.TabIndex = 8;
             this.ExportButton.Text = "Export";
             this.ExportButton.UseVisualStyleBackColor = true;
+            this.ExportButton.Click += new System.EventHandler(this.ExportButton_Click);
             // 
             // CancelButton
             // 
-            this.CancelButton.Location = new System.Drawing.Point(230, 191);
+            this.CancelButton.Location = new System.Drawing.Point(230, 230);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(75, 23);
             this.CancelButton.TabIndex = 9;
@@ -141,11 +144,30 @@ namespace NEA
             this.CancelButton.UseVisualStyleBackColor = true;
             this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
+            // DifficultyLabel
+            // 
+            this.DifficultyLabel.AutoSize = true;
+            this.DifficultyLabel.Location = new System.Drawing.Point(34, 154);
+            this.DifficultyLabel.Name = "DifficultyLabel";
+            this.DifficultyLabel.Size = new System.Drawing.Size(58, 15);
+            this.DifficultyLabel.TabIndex = 10;
+            this.DifficultyLabel.Text = "Difficulty:";
+            // 
+            // DifficultyBox
+            // 
+            this.DifficultyBox.FormattingEnabled = true;
+            this.DifficultyBox.Location = new System.Drawing.Point(160, 151);
+            this.DifficultyBox.Name = "DifficultyBox";
+            this.DifficultyBox.Size = new System.Drawing.Size(120, 23);
+            this.DifficultyBox.TabIndex = 11;
+            // 
             // ExportForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(398, 226);
+            this.ClientSize = new System.Drawing.Size(398, 265);
+            this.Controls.Add(this.DifficultyBox);
+            this.Controls.Add(this.DifficultyLabel);
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.ExportButton);
             this.Controls.Add(this.BeatsPerNoteUpDown);
@@ -179,5 +201,7 @@ namespace NEA
         private System.Windows.Forms.ToolTip GeneralToolTip;
         private System.Windows.Forms.Button ExportButton;
         private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Label DifficultyLabel;
+        private System.Windows.Forms.ComboBox DifficultyBox;
     }
 }

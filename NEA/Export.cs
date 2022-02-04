@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
 namespace NEA
 {
@@ -57,13 +58,20 @@ namespace NEA
             {
                 return;
             }
-            string srtbFile;
+            Match bpmMarkerText;
+            MatchCollection difficultiesNotes;
             using(StreamReader sr = new StreamReader(filePathLoaded))
             {
-                srtbFile = sr.ReadToEnd();
+                string file = sr.ReadToEnd();
+                bpmMarkerText = Regex.Match(file, @"(bpmMarkers)[^(}\])]*");
+                difficultiesNotes = Regex.Matches(file, @"(notes)[^]]*");
                 sr.Close();
             }
-
+            MessageBox.Show(bpmMarkerText.Value);
+            foreach(Match match in difficultiesNotes)
+            {
+                MessageBox.Show(match.Value);
+            }
         }
 
         //Check for errors in user input in Export form

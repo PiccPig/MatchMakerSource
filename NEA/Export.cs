@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace NEA
 {
@@ -23,11 +24,11 @@ namespace NEA
         {
             GeneralToolTip.SetToolTip(this.StartingBeatLabel, "The \"Current Beat\" value shown on the left hand side of the ingame editor. Input the current beat value that you want the match pattern to start on.");
             GeneralToolTip.SetToolTip(this.BeatsPerNoteLabel, "How many \"Current Beat\" values you want to separate each note in the pattern. e.g. 1 = a quarter note, 0.25 = a sixteenth note, 0.01 is very close together.");
-            DifficultyBox.Items.Add("XD");
-            DifficultyBox.Items.Add("Expert");
-            DifficultyBox.Items.Add("Hard");
-            DifficultyBox.Items.Add("Normal");
             DifficultyBox.Items.Add("Easy");
+            DifficultyBox.Items.Add("Normal");
+            DifficultyBox.Items.Add("Hard");
+            DifficultyBox.Items.Add("Expert");
+            DifficultyBox.Items.Add("XD");
         }
 
         private void CancelButton_Click(object sender, EventArgs e) //Closes the form.
@@ -58,20 +59,16 @@ namespace NEA
             {
                 return;
             }
-            Match bpmMarkerText;
-            MatchCollection difficultiesNotes;
+            string file;
             using(StreamReader sr = new StreamReader(filePathLoaded))
             {
-                string file = sr.ReadToEnd();
-                bpmMarkerText = Regex.Match(file, @"(bpmMarkers)[^(}\])]*");
-                difficultiesNotes = Regex.Matches(file, @"(notes)[^]]*");
+                file = sr.ReadToEnd();
                 sr.Close();
             }
-            MessageBox.Show(bpmMarkerText.Value);
-            foreach(Match match in difficultiesNotes)
-            {
-                MessageBox.Show(match.Value);
-            }
+            srtbFile srtbFile = JsonConvert.DeserializeObject<srtbFile>(file);
+            SO_TrackData trackData = JsonConvert.DeserializeObject<SO_TrackData>(srtbFile.largestringvaluescontainer.values[DifficultyBox.SelectedIndex].val);
+            SO_ClipInfo clipInfo = JsonConvert.DeserializeObject<SO_ClipInfo>(srtbFile.largestringvaluescontainer.values[6].val);
+            
         }
 
         //Check for errors in user input in Export form

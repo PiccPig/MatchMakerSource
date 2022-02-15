@@ -327,6 +327,10 @@ namespace NEA
             };
             saveFileDialog1.ShowDialog();
             string encodedGrid = EncodeNoteGrid(notes);
+            if(saveFileDialog1.FileName == "")
+            {
+                return;
+            }
             if(!File.Exists(saveFileDialog1.FileName))
             {
                 File.Create(saveFileDialog1.FileName);

@@ -6,9 +6,9 @@ namespace NEA
 {
     class srtbFile
     {
-        public unityObjectValuesContainer unityobjectvaluescontainer { get; set; }
-        public largeStringValuesContainer largestringvaluescontainer { get; set; }
-        public int ClipInfoCount { get; set; }
+        public unityObjectValuesContainer unityObjectValuesContainer { get; set; }
+        public largeStringValuesContainer largeStringValuesContainer { get; set; }
+        public int clipInfoCount { get; set; }
     }
 
     class unityObjectValuesContainer

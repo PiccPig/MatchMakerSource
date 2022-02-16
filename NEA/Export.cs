@@ -27,7 +27,7 @@ namespace NEA
             ExportForm_Load();
         }
 
-        public void ExportForm_Load() //Sets tooltips explaining Starting Beat and Beats Per Note
+        public void ExportForm_Load() //Sets tooltips explaining Starting Beat and Beats Per Note, also sets 
         {
             GeneralToolTip.SetToolTip(this.StartingBeatLabel, "The \"Current Beat\" value shown on the left hand side of the ingame editor. Input the current beat value that you want the match pattern to start on.");
             GeneralToolTip.SetToolTip(this.BeatsPerNoteLabel, "How many \"Current Beat\" values you want to separate each note in the pattern. e.g. 1 = a quarter note, 0.25 = a sixteenth note, 0.01 is very close together.");
@@ -74,13 +74,13 @@ namespace NEA
                 sr.Close();
             }
             srtbFile srtbFile = JsonConvert.DeserializeObject<srtbFile>(file);
-            SO_TrackData trackData = JsonConvert.DeserializeObject<SO_TrackData>(srtbFile.largestringvaluescontainer.values[DifficultyBox.SelectedIndex+1].val);
-            SO_ClipInfo clipInfo = JsonConvert.DeserializeObject<SO_ClipInfo>(srtbFile.largestringvaluescontainer.values[6].val);
+            SO_TrackData trackData = JsonConvert.DeserializeObject<SO_TrackData>(srtbFile.largeStringValuesContainer.values[DifficultyBox.SelectedIndex+1].val);
+            SO_ClipInfo clipInfo = JsonConvert.DeserializeObject<SO_ClipInfo>(srtbFile.largeStringValuesContainer.values[6].val);
 
             decimal firstBeat = CurrentBeatUpDown.Value;
             decimal lastBeat = firstBeat + (BeatsPerNoteUpDown.Value * gridLength);
-            float firstNoteTime = FindTimeOfBeat((float)firstBeat, clipInfo, clipInfo.timeSignatureMarkers[0].startingBeat);
-            float lastNoteTime = FindTimeOfBeat((float)lastBeat, clipInfo, clipInfo.timeSignatureMarkers[0].startingBeat);
+            float firstNoteTime = FindTimeOfBeat((float)firstBeat, clipInfo);
+            float lastNoteTime = FindTimeOfBeat((float)lastBeat, clipInfo);
 
             if(ReplaceNotesCheckbox.Checked)
             {
@@ -88,7 +88,7 @@ namespace NEA
             }
             AddNewNotes(firstNoteTime, trackData);
 
-            srtbFile.largestringvaluescontainer.values[DifficultyBox.SelectedIndex+1].val = JsonConvert.SerializeObject(trackData);
+            srtbFile.largeStringValuesContainer.values[DifficultyBox.SelectedIndex+1].val = JsonConvert.SerializeObject(trackData);
             file = JsonConvert.SerializeObject(srtbFile);
             File.WriteAllText(filePathLoaded, file);
             this.Close();
@@ -111,7 +111,7 @@ namespace NEA
         {
             for (int i = gridLength-1; i >= 0; i--)
             {
-                float time = firstNoteTime + (float)BeatsPerNoteUpDown.Value * (gridLength-i-1);
+                float time = firstNoteTime + (float)BeatsPerNoteUpDown.Value * (gridLength-i-1); //need to vertically flip grid as index 0 is at top
                 for (int j = 0; j < gridWidth; j++)
                 {
                     if(noteGrid[j,i].Colour != 0)
@@ -120,8 +120,8 @@ namespace NEA
                         note note = new note()
                         {
                             time = time,
-                            type = 1,
-                            colorIndex = noteGrid[j, i].Colour - 1,
+                            type = 0,
+                            colorIndex = noteGrid[gridWidth-j-1, i].Colour - 1,
                             column = column,
                             m_size = 0
                         };
@@ -137,13 +137,13 @@ namespace NEA
 
         private int FindColumn(int j)
         {
-            return j - gridWidth / 2;
+            return (j - gridWidth / 2)*-1; //needs to be flipped for some reason
         }
 
-        private float FindTimeOfBeat(float beatToFind, SO_ClipInfo clipInfo, int startingBeat)
+        private float FindTimeOfBeat(float beatToFind, SO_ClipInfo clipInfo)
         {
             bpmMarker[] bpmMarkers = clipInfo.bpmMarkers; //for legibility
-            float beat = (float)startingBeat;
+            float beat = 0;
             bool beatExceeded = false;
             int i = 0;
             if (bpmMarkers.Length > 1)

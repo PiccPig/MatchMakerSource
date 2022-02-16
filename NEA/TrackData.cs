@@ -16,7 +16,7 @@ namespace NEA
         public bool isCalibration { get; set; }
         public tutorialTitleTranslation tutorialTitleTranslation { get; set; }
         public assetReference[] clipInfoAssetReferences { get; set; }
-        public backgroundId backgroundId { get; set; }
+        public backgroundID backgroundId { get; set; }
         public assetReference background { get; set; }
         public assetReference groundSettingsToUse { get; set; }
         public assetReference groundSettingsOverTime { get; set; }
@@ -45,9 +45,9 @@ namespace NEA
         public string assetName { get; set; }
         public string m_guid { get; set; }
     }
-    class backgroundId
+    class backgroundID
     {
-        public string backgroundID { get; set; }
+        public string backgroundId { get; set; }
     }
     class splinePathData
     {

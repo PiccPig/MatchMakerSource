@@ -13,9 +13,9 @@ namespace NEA
 {
     public partial class MatchMaker : System.Windows.Forms.Form
     {
-        private int gridLength = 20; //   initial size of grid
-        private int gridWidth = 9;
-        private NoteButton[,] notes;
+        public int gridLength { get; set; } //   initial size of grid
+        public int gridWidth { get; set; }
+        public NoteButton[,] notes { get; set; }
         private int gridSizeHorizontal = 270; //initial pixel dimensions of the grid
         private int gridSizeVertical = 600;
         private const int topBuffer = 90;
@@ -31,8 +31,10 @@ namespace NEA
             MatchMaker_Load();
         }
 
-        public void MatchMaker_Load()
+        private void MatchMaker_Load()
         {
+            gridLength = 20;
+            gridWidth = 9;
             notes = new NoteButton[gridWidth, gridLength];
             notes = CreateBlankGrid(gridWidth, gridLength);
             ShowGrid(notes);
@@ -57,7 +59,7 @@ namespace NEA
         }
 
         // Creates controls for an input note grid and displays them on the form.
-        public void ShowGrid(NoteButton[,] newnotes)
+        private void ShowGrid(NoteButton[,] newnotes)
         {
             notes = newnotes;
             int buttonWidth = gridSizeHorizontal / gridWidth;
@@ -81,7 +83,7 @@ namespace NEA
         }
 
         //Removes all the NoteButton controls from the form.
-        public void RemoveGrid()
+        private void RemoveGrid()
         {
             foreach(NoteButton note in notes)
             {
@@ -406,7 +408,7 @@ namespace NEA
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e) //Opens the exporting form
         {
-            ExportForm export = new ExportForm();
+            ExportForm export = new ExportForm(this.notes, this.gridWidth, this.gridLength);
             export.Show();
         }
     }

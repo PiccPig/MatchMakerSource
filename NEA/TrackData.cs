@@ -76,7 +76,7 @@ namespace NEA
     }
     class SO_ClipInfo
     {
-        public timeSignatureMarker[] timeSignatureMerkers { get; set; }
+        public timeSignatureMarker[] timeSignatureMarkers { get; set; }
         public bpmMarker[] bpmMarkers { get; set; }
         public cuePoint[] cuePoints { get; set; }
         public clipAssetReference clipAssetReference { get; set; }

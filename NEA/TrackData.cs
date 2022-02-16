@@ -24,10 +24,10 @@ namespace NEA
         public splinePathData _feverTime { get; set; }
         public string[] tutorialObjects { get; set; }
         public string[] tutorialTexts { get; set; }
-        public clipData[] clipDatas { get; set; }
+        public clipData[] clipData { get; set; }
         public List<note> notes { get; set; }
         public string[] rewindSections { get; set; }
-        string lastEditedOnDate { get; set; }
+        public string lastEditedOnDate { get; set; }
     }
 
     class previewLoopBars
@@ -60,11 +60,11 @@ namespace NEA
         public int startBar { get; set; }
         public int endBar { get; set; }
         public int transitionIn { get; set; }
-        public int transitionInValue { get; set; }
-        public int transitionInOffset { get; set; }
+        public float transitionInValue { get; set; }
+        public float transitionInOffset { get; set; }
         public int transitionOut { get; set; }
-        public int transitionOutValue { get; set; }
-        public int transitionOutOffset { get; set; }
+        public float transitionOutValue { get; set; }
+        public float transitionOutOffset { get; set; }
     }
     class note
     {

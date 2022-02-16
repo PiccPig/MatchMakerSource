@@ -86,7 +86,7 @@ namespace NEA
             {
                 RemoveNotesInRange(firstNoteTime, lastNoteTime, trackData);
             }
-            trackData = AddNewNotes(firstNoteTime, trackData);
+            AddNewNotes(firstNoteTime, trackData);
 
             srtbFile.largestringvaluescontainer.values[DifficultyBox.SelectedIndex+1].val = JsonConvert.SerializeObject(trackData);
             file = JsonConvert.SerializeObject(srtbFile);
@@ -107,7 +107,7 @@ namespace NEA
             }
 
         }
-        private SO_TrackData AddNewNotes(float firstNoteTime, SO_TrackData trackData)
+        private void AddNewNotes(float firstNoteTime, SO_TrackData trackData)
         {
             for (int i = gridLength-1; i >= 0; i--)
             {
@@ -129,8 +129,10 @@ namespace NEA
                     }
                 }
             }
-            trackData.notes = trackData.notes.OrderBy(a => a.time).ToList();
-            return trackData;
+            if (trackData.notes.Count != 0)
+            {
+                trackData.notes = trackData.notes.OrderBy(a => a.time).ToList();
+            }
         }
 
         private int FindColumn(int j)

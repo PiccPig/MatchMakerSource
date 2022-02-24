@@ -40,8 +40,19 @@ namespace NEA
             ShowGrid(notes);
         }
 
-        //Creates a new NoteButton[,] with no colour.
+        #region ControlManipulaion
+
+        private DialogResult SendWarning(string v)
+        //Shows a general OK/Cancel warning dialog box with a specified message. Returns the result clicked by the user.
+        {
+            string title = "Warning";
+            MessageBoxButtons buttons = MessageBoxButtons.OKCancel;
+            DialogResult result = MessageBox.Show(v, title, buttons, MessageBoxIcon.None, MessageBoxDefaultButton.Button2);
+            return DialogResult;
+        }
+
         private NoteButton[,] CreateBlankGrid(int width, int length)
+        //Creates a new NoteButton[,] with no colour.
         {
             NoteButton[,] dummyGrid = new NoteButton[width, length];
             for (int j = 0; j < length; j++)
@@ -58,8 +69,8 @@ namespace NEA
             return dummyGrid;
         }
 
-        // Creates controls for an input note grid and displays them on the form.
         private void ShowGrid(NoteButton[,] newnotes)
+        // Creates controls for an input note grid and displays them on the form.
         {
             notes = newnotes;
             int buttonWidth = gridSizeHorizontal / gridWidth;
@@ -82,20 +93,24 @@ namespace NEA
             }
         }
 
-        //Removes all the NoteButton controls from the form.
         private void RemoveGrid()
+        //Removes all the NoteButton controls from the form.
         {
-            foreach(NoteButton note in notes)
+            foreach (NoteButton note in notes)
             {
                 Controls.Remove(note);
             }
         }
 
+        #endregion
+
+        #region GridInteraction
+
+        private void NoteButton_MouseEnter(object sender, EventArgs e)
         /* Triggered when the mouse hovers over a button:
          * if LMouse is toggled, change button to colour 1
          * if RMouse is toggled, change button to colour 2
          * if MMouse is toggled, clear the colour.            */
-        private void NoteButton_MouseEnter(object sender, EventArgs e)
         {
             NoteButton b = (NoteButton)sender;
             if (leftMouseToggle)
@@ -112,13 +127,12 @@ namespace NEA
             }
         }
 
+        private void SizeSubmitButton_Click(object sender, EventArgs e)
         /* Replaces the note grid with a new note grid of a new size.
          * Sends a warning if the grid is being shrunk
-         * Does not do anything if the size UpDown values have not been changed.
-         */
-        private void SizeSubmitButton_Click(object sender, EventArgs e)
+         * Does not do anything if the size UpDown values have not been changed. */
         {
-            if(gridLength != LengthUpDown.Value || gridWidth != WidthUpDown.Value)
+            if (gridLength != LengthUpDown.Value || gridWidth != WidthUpDown.Value)
             {
                 
                 int length = (int)LengthUpDown.Value;
@@ -146,22 +160,12 @@ namespace NEA
             }
         }
 
-        //Shows a general OK/Cancel warning dialog box with a specified message. Returns the result clicked by the user.
-        private DialogResult SendWarning(string v)
-        {
-            string title = "Warning";
-            MessageBoxButtons buttons = MessageBoxButtons.OKCancel;
-            DialogResult result = MessageBox.Show(v, title, buttons, MessageBoxIcon.None, MessageBoxDefaultButton.Button2);
-            return DialogResult;
-        }
-
+        private void ClickHandler(object sender, MouseEventArgs e)
         /* Triggered when a NoteButton is clicked:
          * If LMouse was clicked, disable both RMouse and MMouse toggles:
-            * If LMouse was already toggled, disable it too. Else, enable.
+             * If LMouse was already toggled, disable it too. Else, enable.
          * Likewise for RMouse and MMouse.
-         * Then, change the colour of that button to the corresponding colour for the mouse button clicked.
-        */
-        private void ClickHandler(object sender, MouseEventArgs e)
+         * Then, change the colour of that button to the corresponding colour for the mouse button clicked.  */
         {
             if (Text[^1] != '*') Text += "*";
             NoteButton b = (NoteButton)sender;
@@ -188,8 +192,8 @@ namespace NEA
             }
         }
 
-        //Replaces the note grid with an empty note grid
         private void ClearButton_Click(object sender, EventArgs e)
+        //Replaces the note grid with an empty note gri
         {
             if (SendWarning("This action cannot be undone. Continue?") == DialogResult.Cancel)
             {
@@ -199,10 +203,11 @@ namespace NEA
             ShowGrid(CreateBlankGrid(gridWidth,gridLength));
         }
 
-        /* Moves all notes in the direction the user pressed
-         * If a note were to be moved into a spot that is off the edge of the grid, then the grid is first expanded to make room for it.
-         */
+        #region ShiftNotes
+        
         private void ShiftButton_Click(object sender, EventArgs e)
+        /* Moves all notes in the direction the user pressed
+         * If a note were to be moved into a spot that is off the edge of the grid, then the grid is first expanded to make room for it.*/
         {
             switch (((Button)sender).Name)
             {
@@ -244,6 +249,7 @@ namespace NEA
         }
 
         private bool CheckColumnIsClear(int column)
+        //Checks column specified for any notes that contain a colour (1 or 2, 0 is transparent.) Returns true if row given is all transparent notes, false if one or more non-transparent notes.
         {
             for (int i = 0; i < gridLength; i++)
             {
@@ -253,6 +259,7 @@ namespace NEA
         }
 
         private bool CheckRowIsClear(int row)
+        //Same logic as CheckColumnIsClear(), but for rows instead.
         {
             for(int i = 0; i < gridWidth; i++)
             {
@@ -262,6 +269,9 @@ namespace NEA
         }
 
         private void ShiftNotes(int down, int right)
+        /* Shifts all notes in the grid in the direction specified. 
+         * Creates a blank grid and copies colours from existing grid over to the blank grid, then removes the current grid controls and shows new one
+         * I couldn't find another way of doing this that avoided recreating controls, as any assignments would just reference the old one instead of creating a copy.*/
         {
             NoteButton[,] dummyNotes = CreateBlankGrid(gridWidth,gridLength);
             for(int j = down == -1 ? 1 : 0; j < gridLength; j++)
@@ -272,7 +282,7 @@ namespace NEA
                     int Y = j + down;
                     if(X < gridWidth && Y < gridLength && i < gridWidth && j < gridLength)
                     {
-                        dummyNotes[X, Y] = notes[i, j];
+                        dummyNotes[X, Y].ChangeColour(notes[i, j].Colour);
                     }
                 }
             }
@@ -280,12 +290,18 @@ namespace NEA
             ShowGrid(dummyNotes);
         }
 
+        #endregion
+
+        #endregion
+
+        #region StripMenuItems
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
 
+        #region Opening
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog()
@@ -312,10 +328,37 @@ namespace NEA
             ShowGrid(notes);
         }
 
-        /* Creates a file dialog to pick which file to save the RLE to.
-         * Then writes the RLE string to the selected file, and changes the name of the form to the saved filename.
-         */
+        // Converts the contents of the given .txt file as a string into a NoteButton[,], assigning each button the correct colour.
+        private NoteButton[,] FileToGrid(string grid)
+        {
+            int width = int.Parse(grid[0..3]); //First 3 characters are the width of the grid
+            int length = int.Parse(grid[3..6]); //2nd 3 characters are the length of the grid
+            string RLE = grid[6..]; //Remaining characters is RLE of the grid notes' colours.
+            NoteButton[,] newNotes = new NoteButton[width, length];
+            newNotes = CreateBlankGrid(width, length);
+
+            int currentCell = 0;
+            for (int i = 0; i < RLE.Length; i += 2)
+            {
+                int currentColour = int.Parse(RLE[i].ToString());
+                int currentRun = int.Parse(RLE[i + 1].ToString());
+                for (int j = currentCell; j < currentCell + currentRun; j++)
+                {
+                    int X = j / length;
+                    int Y = j % length;
+                    newNotes[X, Y].ChangeColour(currentColour);
+                }
+                currentCell += currentRun;
+            }
+            return newNotes;
+        }
+        #endregion
+
+        #region Saving
+
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        /* Creates a file dialog to pick which file to save the RLE to.
+         * Then writes the RLE string to the selected file, and changes the name of the form to the saved filename.*/
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog()
             {
@@ -345,10 +388,9 @@ namespace NEA
             Text = $"MatchMaker ({saveFileDialog1.FileName.Split('\\')[^1]})"; //changes form title to just the filename of the filepath
         }
 
-        /* Encodes NoteButton grid into an RLE file:
-         * first 3 characters width, second 3 characters length, remaining characters in pairs of 2: first for run colour, second for run length.
-         */
         private string EncodeNoteGrid(NoteButton[,] notes)
+        /* Encodes NoteButton grid into an RLE file:
+         * first 3 characters width, second 3 characters length, remaining characters in pairs of 2: first for run colour, second for run length. */
         {
             string encodedGrid = "";
             encodedGrid += $"{gridWidth:000}{gridLength:000}"; //Padded to 3 spaces with leading zeroes
@@ -356,7 +398,8 @@ namespace NEA
             return encodedGrid;
         }
 
-        private string GridToRLE(NoteButton[,] notes) //See EncodeNoteGrid() for description - this is encoding the notes themselves and not the width/length.
+        private string GridToRLE(NoteButton[,] notes)
+        //See EncodeNoteGrid() for description - this is encoding the notes themselves and not the width/length.
         {
             string rle = "";
             int currentColour = notes[0, 0].Colour;
@@ -381,36 +424,16 @@ namespace NEA
             return rle;
         }
 
-        // Converts the contents of the given .txt file as a string into a NoteButton[,], assigning each button the correct colour.
-        private NoteButton[,] FileToGrid(string grid) 
-        {
-            int width = int.Parse(grid[0..3]); //First 3 characters are the width of the grid
-            int length = int.Parse(grid[3..6]); //2nd 3 characters are the length of the grid
-            string RLE = grid[6..]; //Remaining characters is RLE of the grid notes' colours.
-            NoteButton[,] newNotes = new NoteButton[width, length];
-            newNotes = CreateBlankGrid(width,length);
+        #endregion
 
-            int currentCell = 0;
-            for(int i = 0; i < RLE.Length; i+=2)
-            {
-                int currentColour = int.Parse(RLE[i].ToString());
-                int currentRun = int.Parse(RLE[i+1].ToString());
-                for(int j = currentCell; j < currentCell + currentRun; j++)
-                {
-                    int X = j / length;
-                    int Y = j % length;
-                    newNotes[X, Y].ChangeColour(currentColour);
-                }
-                currentCell += currentRun;
-            }
-            return newNotes;
-        }
-
-        private void exportToolStripMenuItem_Click(object sender, EventArgs e) //Opens the exporting form
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        //Opens the exporting form 
         {
             ExportForm export = new ExportForm(this.notes, this.gridWidth, this.gridLength);
             export.Show();
         }
+
+        #endregion
     }
 }
 

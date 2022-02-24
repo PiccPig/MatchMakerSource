@@ -15,23 +15,11 @@ namespace NEA
         private Color colour1 = Color.FromArgb(255, 67, 143, 250);  // default match colours
         private Color colour2 = Color.FromArgb(255, 247, 32, 32);
         private Color transparent = Color.FromArgb(0, 255, 255, 255);
-        public int Colour { get; set; }
+        public int Colour { get; set; } //Used to easily convert colour to the .srtb colour type.
 
         public void ChangeColour(int c)
+        //Changes the control's BackColor, as well as its Colour value. 
         {
-            /*this.Colour = (this.Colour + 1) % 3;
-            switch (this.Colour)
-            {
-                case 1:
-                    this.BackColor = colour1;
-                    break;
-                case 2:
-                    this.BackColor = colour2;
-                    break;
-                default:
-                    this.BackColor = transparent;
-                    break;
-            }*/
             switch (c)
             {
                 case 1:
@@ -46,7 +34,6 @@ namespace NEA
                     this.BackColor = transparent;
                     this.Colour = 0;
                     break;
-            
             }
             this.Invalidate();
         }

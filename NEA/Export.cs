@@ -14,6 +14,9 @@ namespace NEA
 {
     public partial class ExportForm : Form
     {
+
+        #region Setup
+
         private string filePathLoaded;
         private NoteButton[,] noteGrid { get; }
         private int gridWidth { get; }
@@ -27,7 +30,8 @@ namespace NEA
             ExportForm_Load();
         }
 
-        public void ExportForm_Load() //Sets tooltips explaining Starting Beat and Beats Per Note, also sets 
+        public void ExportForm_Load()
+        //Sets tooltips explaining Starting Beat and Beats Per Note, also sets 
         {
             GeneralToolTip.SetToolTip(this.StartingBeatLabel, "The \"Current Beat\" value shown on the left hand side of the ingame editor. Input the current beat value that you want the match pattern to start on.");
             GeneralToolTip.SetToolTip(this.BeatsPerNoteLabel, "How many \"Current Beat\" values you want to separate each note in the pattern. e.g. 1 = a quarter note, 0.25 = a sixteenth note, 0.01 is very close together.");
@@ -38,12 +42,18 @@ namespace NEA
             DifficultyBox.Items.Add("XD");
         }
 
-        private void CancelButton_Click(object sender, EventArgs e) //Closes the form.
+        #endregion
+
+        #region Buttons
+
+        private void CancelButton_Click(object sender, EventArgs e)
+        //Closes the form.
         {
             this.Close();
         }
 
-        private void BrowseButton_Click(object sender, EventArgs e) //Opens a file dialog to select a .srtb file to write to.
+        private void BrowseButton_Click(object sender, EventArgs e)
+        //Opens a file dialog to select a .srtb file to write to.
         {
             OpenFileDialog browseFileDialog = new OpenFileDialog()
             {
@@ -66,15 +76,39 @@ namespace NEA
             {
                 return;
             }
+            Export();
+        }
 
+        private bool ExportErrorCheck()
+        //Check for errors in user input in Export form
+        {
+            if (FileLoadedLabel.Text == "No file loaded...")
+            {
+                //!!!!!!!!!Send warning!!!!!!!!!!
+                return true;
+            }
+            if (DifficultyBox.SelectedIndex == 0)
+            {
+                //!!!!!!!!!Send warning!!!!!!!!!!!
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region Export
+
+        private void Export()
+        {
             string file;
-            using(StreamReader sr = new StreamReader(filePathLoaded))
+            using (StreamReader sr = new StreamReader(filePathLoaded))
             {
                 file = sr.ReadToEnd();
                 sr.Close();
             }
             srtbFile srtbFile = JsonConvert.DeserializeObject<srtbFile>(file);
-            SO_TrackData trackData = JsonConvert.DeserializeObject<SO_TrackData>(srtbFile.largeStringValuesContainer.values[DifficultyBox.SelectedIndex+1].val);
+            SO_TrackData trackData = JsonConvert.DeserializeObject<SO_TrackData>(srtbFile.largeStringValuesContainer.values[DifficultyBox.SelectedIndex + 1].val);
             SO_ClipInfo clipInfo = JsonConvert.DeserializeObject<SO_ClipInfo>(srtbFile.largeStringValuesContainer.values[6].val);
 
             decimal firstBeat = CurrentBeatUpDown.Value;
@@ -82,13 +116,13 @@ namespace NEA
             float firstNoteTime = FindTimeOfBeat((float)firstBeat, clipInfo);
             float lastNoteTime = FindTimeOfBeat((float)lastBeat, clipInfo);
 
-            if(ReplaceNotesCheckbox.Checked)
+            if (ReplaceNotesCheckbox.Checked)
             {
                 RemoveNotesInRange(firstNoteTime, lastNoteTime, trackData);
             }
             AddNewNotes(firstNoteTime, trackData);
 
-            srtbFile.largeStringValuesContainer.values[DifficultyBox.SelectedIndex+1].val = JsonConvert.SerializeObject(trackData);
+            srtbFile.largeStringValuesContainer.values[DifficultyBox.SelectedIndex + 1].val = JsonConvert.SerializeObject(trackData);
             file = JsonConvert.SerializeObject(srtbFile);
             File.WriteAllText(filePathLoaded, file);
             this.Close();
@@ -158,20 +192,6 @@ namespace NEA
             return bpmMarkers[i].clipTime + (beatToFind - beat) * bpmMarkers[i].beatLength;
         }
 
-        //Check for errors in user input in Export form
-        private bool ExportErrorCheck()
-        {
-            if(FileLoadedLabel.Text == "No file loaded...")
-            {
-                //!!!!!!!!!Send warning!!!!!!!!!!
-                return true;
-            }
-            if(DifficultyBox.SelectedIndex == 0)
-            {
-                //!!!!!!!!!Send warning!!!!!!!!!!!
-                return true;
-            }
-            return false;
-        }
+        #endregion
     }
 }

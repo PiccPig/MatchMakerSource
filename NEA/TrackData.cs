@@ -4,13 +4,14 @@ using System.Text;
 
 namespace NEA
 {
+    #region TrackData
     class SO_TrackData
     {
         public int revisionVersion { get; set; }
         public int compatibilityVersion { get; set; }
         public int difficultyRating { get; set; }
         public previewLoopBars previewLoopBars { get; set; }
-        public double goBeatOffsetFromFirstNote { get; set; }
+        public float goBeatOffsetFromFirstNote { get; set; }
         public int difficultyType { get; set; }
         public bool isTutorial { get; set; }
         public bool isCalibration { get; set; }
@@ -74,6 +75,9 @@ namespace NEA
         public int column { get; set; }
         public int m_size { get; set; }
     }
+    #endregion
+
+    #region ClipInfo
     class SO_ClipInfo
     {
         public timeSignatureMarker[] timeSignatureMarkers { get; set; }
@@ -106,4 +110,5 @@ namespace NEA
         public string assetName { get; set; }
         public string m_guid { get; set; }
     }
+    #endregion
 }

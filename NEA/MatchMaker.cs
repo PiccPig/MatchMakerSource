@@ -13,9 +13,9 @@ namespace NEA
 {
     public partial class MatchMaker : System.Windows.Forms.Form
     {
-        public int gridLength { get; set; } //   initial size of grid
-        public int gridWidth { get; set; }
-        public NoteButton[,] notes { get; set; }
+        private int gridLength { get; set; } //   initial size of grid
+        private int gridWidth { get; set; }
+        private NoteButton[,] notes { get; set; }
         private int gridSizeHorizontal = 270; //initial pixel dimensions of the grid
         private int gridSizeVertical = 600;
         private const int topBuffer = 90;
@@ -302,7 +302,7 @@ namespace NEA
         }
 
         #region Opening
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog()
             {

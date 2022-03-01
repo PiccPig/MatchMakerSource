@@ -59,7 +59,7 @@ namespace NEA
             // 
             // CurrentBeatUpDown
             // 
-            this.CurrentBeatUpDown.DecimalPlaces = 2;
+            this.CurrentBeatUpDown.DecimalPlaces = 4;
             this.CurrentBeatUpDown.Location = new System.Drawing.Point(160, 68);
             this.CurrentBeatUpDown.Maximum = new decimal(new int[] {
             99999,
@@ -118,7 +118,7 @@ namespace NEA
             // 
             // BeatsPerNoteUpDown
             // 
-            this.BeatsPerNoteUpDown.DecimalPlaces = 2;
+            this.BeatsPerNoteUpDown.DecimalPlaces = 4;
             this.BeatsPerNoteUpDown.Location = new System.Drawing.Point(160, 109);
             this.BeatsPerNoteUpDown.Name = "BeatsPerNoteUpDown";
             this.BeatsPerNoteUpDown.Size = new System.Drawing.Size(120, 23);

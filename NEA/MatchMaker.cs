@@ -298,7 +298,13 @@ namespace NEA
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            DialogResult dialogResult = SendWarning("Would you like to save the current file first? (OK = Yes Cancel = No)");
+            if(dialogResult == DialogResult.OK)
+            {
+                saveToolStripMenuItem_Click(null,null);
+            }
+            ClearButton_Click(null,null);
+            Text = "MatchMaker (Unsaved)";
         }
 
         #region Opening
@@ -325,6 +331,7 @@ namespace NEA
             notes = newNotes;
             gridWidth = notes.GetLength(0); WidthUpDown.Value = gridWidth;
             gridLength = notes.GetLength(1); LengthUpDown.Value = gridLength;
+            Text = $"MatchMaker ({openFileDialog1.FileName})";
             ShowGrid(notes);
         }
 
@@ -368,7 +375,7 @@ namespace NEA
                 DefaultExt = ".txt",
                 Filter = "txt files(*.txt)|*.txt",
                 CheckFileExists = false,
-                CheckPathExists = true
+                CheckPathExists = false
             };
             saveFileDialog1.ShowDialog();
             string encodedGrid = EncodeNoteGrid(notes);

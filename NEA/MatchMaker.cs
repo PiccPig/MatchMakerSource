@@ -298,7 +298,13 @@ namespace NEA
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            DialogResult dialogResult = SendWarning("Would you like to save the current file first? (OK = Yes Cancel = No)");
+            if (dialogResult == DialogResult.OK)
+            {
+                saveToolStripMenuItem_Click(null, null);
+            }
+            ClearButton_Click(null, null);
+            Text = "MatchMaker (Unsaved)";
         }
 
         #region Opening

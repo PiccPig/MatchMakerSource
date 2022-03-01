@@ -30,6 +30,15 @@ namespace NEA
             ExportForm_Load();
         }
 
+        private DialogResult SendWarning(string v)
+        //Shows a general OK/Cancel warning dialog box with a specified message. Returns the result clicked by the user.
+        {
+            string title = "Warning";
+            MessageBoxButtons buttons = MessageBoxButtons.OK;
+            DialogResult result = MessageBox.Show(v, title, buttons, MessageBoxIcon.None, MessageBoxDefaultButton.Button2);
+            return DialogResult;
+        }
+
         public void ExportForm_Load()
         //Sets tooltips explaining Starting Beat and Beats Per Note, also sets 
         {
@@ -71,8 +80,9 @@ namespace NEA
         }
 
         private void ExportButton_Click(object sender, EventArgs e)
+        //Checks for errors from user before exporting.
         {
-            if(ExportErrorCheck())
+            if (ExportErrorCheck())
             {
                 return;
             }
@@ -80,16 +90,16 @@ namespace NEA
         }
 
         private bool ExportErrorCheck()
-        //Check for errors in user input in Export form
+        //Check for errors in user input in Export form. Returns true if either check comes back true, otherwise returns false.
         {
             if (FileLoadedLabel.Text == "No file loaded...")
             {
-                //!!!!!!!!!Send warning!!!!!!!!!!
+                DialogResult dr = SendWarning("No file selected! Please try again.");
                 return true;
             }
             if (DifficultyBox.SelectedIndex == 0)
             {
-                //!!!!!!!!!Send warning!!!!!!!!!!!
+                DialogResult dr = SendWarning("No difficulty selected! Please try again.");
                 return true;
             }
             return false;
@@ -108,73 +118,35 @@ namespace NEA
                 sr.Close();
             }
             srtbFile srtbFile = JsonConvert.DeserializeObject<srtbFile>(file);
-            SO_TrackData trackData = JsonConvert.DeserializeObject<SO_TrackData>(srtbFile.largeStringValuesContainer.values[DifficultyBox.SelectedIndex + 1].val);
-            SO_ClipInfo clipInfo = JsonConvert.DeserializeObject<SO_ClipInfo>(srtbFile.largeStringValuesContainer.values[6].val);
+            SO_TrackData trackData = JsonConvert.DeserializeObject<SO_TrackData>(srtbFile.largeStringValuesContainer.values[DifficultyBox.SelectedIndex + 1].val); //deserialises the selected difficulties TrackData from the srtb object
+            SO_ClipInfo clipInfo = JsonConvert.DeserializeObject<SO_ClipInfo>(srtbFile.largeStringValuesContainer.values[6].val); //Deserialises the ClipInfo from the srtb object
 
+            //gather user inputs from form controls
             decimal firstBeat = CurrentBeatUpDown.Value;
             decimal lastBeat = firstBeat + (BeatsPerNoteUpDown.Value * gridLength);
-            float firstNoteTime = FindTimeOfBeat((float)firstBeat, clipInfo);
-            float lastNoteTime = FindTimeOfBeat((float)lastBeat, clipInfo);
+
+            float[] values = FindTimeOfBeat((float)firstBeat, clipInfo);
+            float firstNoteTime = values[0];
+            float beatLength = values[1];
+
+            float lastNoteTime = FindTimeOfBeat((float)lastBeat, clipInfo)[0];
 
             if (ReplaceNotesCheckbox.Checked)
             {
-                RemoveNotesInRange(firstNoteTime, lastNoteTime, trackData);
+                trackData = RemoveNotesInRange(firstNoteTime, lastNoteTime, trackData); //Remove existing notes from the TrackData
             }
-            AddNewNotes(firstNoteTime, trackData);
 
+            //add new notes to the TrackData object
+            AddNewNotes(firstNoteTime, trackData, beatLength);
+
+            //re-serialise the objects
             srtbFile.largeStringValuesContainer.values[DifficultyBox.SelectedIndex + 1].val = JsonConvert.SerializeObject(trackData);
             file = JsonConvert.SerializeObject(srtbFile);
             File.WriteAllText(filePathLoaded, file);
             this.Close();
         }
 
-        private void RemoveNotesInRange(float firstNoteTime, float lastNoteTime, SO_TrackData trackData)
-        {
-            int length = trackData.notes.Count;
-            for(int i = 0; i < length; i++)
-            {
-                if(trackData.notes[i].time >= firstNoteTime && trackData.notes[i].time <= lastNoteTime)
-                {
-                    trackData.notes.RemoveAt(i);
-                    length--;
-                }
-            }
-
-        }
-        private void AddNewNotes(float firstNoteTime, SO_TrackData trackData)
-        {
-            for (int i = gridLength-1; i >= 0; i--)
-            {
-                float time = firstNoteTime + (float)BeatsPerNoteUpDown.Value * (gridLength-i-1); //need to vertically flip grid as index 0 is at top
-                for (int j = 0; j < gridWidth; j++)
-                {
-                    if(noteGrid[j,i].Colour != 0)
-                    {
-                        int column = FindColumn(j);
-                        note note = new note()
-                        {
-                            time = time,
-                            type = 0,
-                            colorIndex = noteGrid[gridWidth-j-1, i].Colour - 1,
-                            column = column,
-                            m_size = 0
-                        };
-                        trackData.notes.Add(note);
-                    }
-                }
-            }
-            if (trackData.notes.Count != 0)
-            {
-                trackData.notes = trackData.notes.OrderBy(a => a.time).ToList();
-            }
-        }
-
-        private int FindColumn(int j)
-        {
-            return (j - gridWidth / 2)*-1; //needs to be flipped for some reason
-        }
-
-        private float FindTimeOfBeat(float beatToFind, SO_ClipInfo clipInfo)
+        private float[] FindTimeOfBeat(float beatToFind, SO_ClipInfo clipInfo)
         {
             bpmMarker[] bpmMarkers = clipInfo.bpmMarkers; //for legibility
             float beat = 0;
@@ -184,12 +156,63 @@ namespace NEA
             {
                 for (i = 0; i < bpmMarkers.Length && !beatExceeded; i++)
                 {
-                    float tempBeat = beat + (bpmMarkers[i + 1].clipTime - bpmMarkers[i].clipTime) / bpmMarkers[i].beatLength;
-                    beatExceeded = tempBeat > beatToFind ? true : false;
+                    float tempBeat = beat + (bpmMarkers[i + 1].clipTime - bpmMarkers[i].clipTime) / bpmMarkers[i].beatLength; //new beat = old + (change in time/time per beat)
+                    beatExceeded = tempBeat > beatToFind;
                     if (!beatExceeded) beat = tempBeat;
                 }
             }
-            return bpmMarkers[i].clipTime + (beatToFind - beat) * bpmMarkers[i].beatLength;
+            i--; // is incremented by 1 after last iteration for loop, need to decrement it again.
+            float[] values = new float[2] { bpmMarkers[i].clipTime + (beatToFind - beat) * bpmMarkers[i].beatLength, bpmMarkers[i].beatLength }; //2nd value is the beat length, which is needed for AddNewNotes.
+            return values; // time = time of current marker + distance in beats from beat * time per beat
+        }
+
+        private SO_TrackData RemoveNotesInRange(float firstNoteTime, float lastNoteTime, SO_TrackData trackData)
+        //Removes all notes in the time range calculated. Returns TrackData with the modified notes.
+        {
+            int length = trackData.notes.Count;
+            for(int i = 0; i < length; i++) //for each existing note
+            {
+                if(trackData.notes[i].time >= firstNoteTime && trackData.notes[i].time <= lastNoteTime) //if note is in the given range, remove the note
+                {
+                    trackData.notes.RemoveAt(i);
+                    length--; //avoiding index not in range
+                }
+            }
+            return trackData;
+        }
+
+        private void AddNewNotes(float firstNoteTime, SO_TrackData trackData, float beatLength)
+        //takes notebuttons from the note grid, take values from it and put into a note object, add to the list in TrackData.
+        {
+            for (int i = gridLength-1; i >= 0; i--) //for each row
+            {
+                float time = firstNoteTime + beatLength * (float)BeatsPerNoteUpDown.Value * (gridLength-i-1); ; //index 0 is at the top of the grid, so we need to take the notes in reverse order from the grid.
+                for (int j = 0; j < gridWidth; j++) //for each note in current row
+                {
+                    if(noteGrid[j,i].Colour != 0) //if note is not transparent
+                    {
+                        int column = FindColumn(j);
+                        note note = new note()
+                        {
+                            time = time,
+                            type = 0, //match note value
+                            colorIndex = noteGrid[j, i].Colour - 1, //blue = 0, red = 1
+                            column = column,
+                            m_size = 0
+                        };
+                        trackData.notes.Add(note);
+                    }
+                }
+            }
+            if (trackData.notes.Count != 0)
+            {
+                trackData.notes = trackData.notes.OrderBy(a => a.time).ToList(); //Order the notes in the list. Technically not needed, but keeps it in the format the game does it.
+            }
+        }
+
+        private int FindColumn(int j)
+        {
+            return (j - gridWidth / 2)*-1; //needs to be horizontally flipped for some reason
         }
 
         #endregion

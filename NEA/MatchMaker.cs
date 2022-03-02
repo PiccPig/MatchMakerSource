@@ -73,8 +73,8 @@ namespace NEA
         // Creates controls for an input note grid and displays them on the form.
         {
             notes = newnotes;
-            int buttonWidth = gridSizeHorizontal / gridWidth;
-            int buttonHeight = gridSizeVertical / gridLength;
+            int buttonWidth = 30;
+            int buttonHeight = 30;
             for (int j = 0; j < gridLength; j++)
             {
                 for (int i = 0; i < gridWidth; i++)

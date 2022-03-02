@@ -149,20 +149,22 @@ namespace NEA
         private float[] FindTimeOfBeat(float beatToFind, SO_ClipInfo clipInfo)
         {
             bpmMarker[] bpmMarkers = clipInfo.bpmMarkers; //for legibility
-            float beat = 0;
+            int startingBeat = clipInfo.timeSignatureMarkers[0].startingBeat;
+            float beat = startingBeat < 0 ? startingBeat * -1 : 0; //Some charts may have a time signature marker before the first bpm marker, so beat 0 will come earlier, this needs to be accounted for, but only if startingbeat is less than 0.
+            float bufferTime = startingBeat < 0 ? startingBeat * -1 * bpmMarkers[0].beatLength : 0;
             bool beatExceeded = false;
             int i = 0;
             if (bpmMarkers.Length > 1)
             {
-                for (i = 0; i < bpmMarkers.Length && !beatExceeded; i++)
+                for (i = 0; i < bpmMarkers.Length - 1 && !beatExceeded; i++)
                 {
                     float tempBeat = beat + (bpmMarkers[i + 1].clipTime - bpmMarkers[i].clipTime) / bpmMarkers[i].beatLength; //new beat = old + (change in time/time per beat)
                     beatExceeded = tempBeat > beatToFind;
                     if (!beatExceeded) beat = tempBeat;
                 }
+                i--; // is incremented by 1 after last iteration for loop, need to decrement it again.
             }
-            i--; // is incremented by 1 after last iteration for loop, need to decrement it again.
-            float[] values = new float[2] { bpmMarkers[i].clipTime + (beatToFind - beat) * bpmMarkers[i].beatLength, bpmMarkers[i].beatLength }; //2nd value is the beat length, which is needed for AddNewNotes.
+            float[] values = new float[2] { bpmMarkers[i].clipTime + bufferTime + (beatToFind - beat) * bpmMarkers[i].beatLength, bpmMarkers[i].beatLength }; //2nd value is the beat length, which is needed for AddNewNotes.
             return values; // time = time of current marker + distance in beats from beat * time per beat
         }
 

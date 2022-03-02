@@ -41,7 +41,7 @@ namespace NEA
         }
 
         #region ControlManipulaion
-
+        
         private DialogResult SendWarning(string v)
         //Shows a general OK/Cancel warning dialog box with a specified message. Returns the result clicked by the user.
         {
@@ -127,6 +127,38 @@ namespace NEA
             }
         }
 
+        private void ClickHandler(object sender, MouseEventArgs e)
+        /* Triggered when a NoteButton is clicked:
+         * If LMouse was clicked, disable both RMouse and MMouse toggles:
+             * If LMouse was already toggled, disable it too. Else, enable.
+         * Likewise for RMouse and MMouse.
+         * Then, change the colour of that button to the corresponding colour for the mouse button clicked.  */
+        {
+            if (Text[^1] != '*') Text += "*";
+            NoteButton b = (NoteButton)sender;
+            if (e.Button == MouseButtons.Left)
+            {
+                leftMouseToggle = !leftMouseToggle;
+                rightMouseToggle = false;
+                middleMouseToggle = false;
+                b.ChangeColour(1);
+            }
+            if (e.Button == MouseButtons.Right)
+            {
+                rightMouseToggle = !rightMouseToggle;
+                leftMouseToggle = false;
+                middleMouseToggle = false;
+                b.ChangeColour(2);
+            }
+            if (e.Button == MouseButtons.Middle)
+            {
+                middleMouseToggle = !middleMouseToggle;
+                leftMouseToggle = false;
+                rightMouseToggle = false;
+                b.ChangeColour(0);
+            }
+        }
+
         private void SizeSubmitButton_Click(object sender, EventArgs e)
         /* Replaces the note grid with a new note grid of a new size.
          * Sends a warning if the grid is being shrunk
@@ -160,37 +192,6 @@ namespace NEA
             }
         }
 
-        private void ClickHandler(object sender, MouseEventArgs e)
-        /* Triggered when a NoteButton is clicked:
-         * If LMouse was clicked, disable both RMouse and MMouse toggles:
-             * If LMouse was already toggled, disable it too. Else, enable.
-         * Likewise for RMouse and MMouse.
-         * Then, change the colour of that button to the corresponding colour for the mouse button clicked.  */
-        {
-            if (Text[^1] != '*') Text += "*";
-            NoteButton b = (NoteButton)sender;
-            if (e.Button == MouseButtons.Left)
-            {
-                leftMouseToggle = !leftMouseToggle;
-                rightMouseToggle = false;
-                middleMouseToggle = false;
-                b.ChangeColour(1);
-            }
-            if (e.Button == MouseButtons.Right)
-            {
-                rightMouseToggle = !rightMouseToggle;
-                leftMouseToggle = false;
-                middleMouseToggle = false;
-                b.ChangeColour(2);
-            }
-            if (e.Button == MouseButtons.Middle)
-            {
-                middleMouseToggle = !middleMouseToggle;
-                leftMouseToggle = false;
-                rightMouseToggle = false;
-                b.ChangeColour(0);
-            }
-        }
 
         private void ClearButton_Click(object sender, EventArgs e)
         //Replaces the note grid with an empty note gri

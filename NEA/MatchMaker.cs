@@ -16,8 +16,6 @@ namespace NEA
         public int gridLength { get; set; } //   initial size of grid
         public int gridWidth { get; set; }
         public NoteButton[,] notes { get; set; }
-        private int gridSizeHorizontal = 270; //initial pixel dimensions of the grid
-        private int gridSizeVertical = 600;
         private const int topBuffer = 90;
         private const int sideBuffer = 50;
 
@@ -230,7 +228,8 @@ namespace NEA
                     break;
                 case "ShiftLeftButton":
                     if(CheckColumnIsClear(0)) ShiftNotes(0, -1);
-                    else //expand 2 right if there are notes on left - since the grid is centered on the middle, this is the same as expanding 1 on both sides then shifting left
+                    else //expand 2 right if there are notes on left
+                         //since the grid is centered on the middle, this is the same as expanding 1 on both sides then shifting left
                     {
                         WidthUpDown.Value += 2;
                         SizeSubmitButton_Click(SizeSubmitButton, null);
@@ -250,7 +249,8 @@ namespace NEA
         }
 
         private bool CheckColumnIsClear(int column)
-        //Checks column specified for any notes that contain a colour (1 or 2, 0 is transparent.) Returns true if row given is all transparent notes, false if one or more non-transparent notes.
+        //Checks column specified for any notes that contain a colour (1 or 2, 0 is transparent.)
+        //Returns true if row given is all transparent notes, false if one or more non-transparent notes.
         {
             for (int i = 0; i < gridLength; i++)
             {
@@ -272,7 +272,8 @@ namespace NEA
         private void ShiftNotes(int down, int right)
         /* Shifts all notes in the grid in the direction specified. 
          * Creates a blank grid and copies colours from existing grid over to the blank grid, then removes the current grid controls and shows new one
-         * I couldn't find another way of doing this that avoided recreating controls, as any assignments would just reference the old one instead of creating a copy.*/
+         * I couldn't find another way of doing this that avoided recreating controls,
+         * as any assignments would just reference the old one instead of creating a copy.*/
         {
             NoteButton[,] dummyNotes = CreateBlankGrid(gridWidth,gridLength);
             for(int j = down == -1 ? 1 : 0; j < gridLength; j++)

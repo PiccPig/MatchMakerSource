@@ -188,7 +188,7 @@ namespace NEA
         {
             for (int i = gridLength-1; i >= 0; i--) //for each row
             {
-                float time = firstNoteTime + beatLength * (float)BeatsPerNoteUpDown.Value * (gridLength-i-1); ; //index 0 is at the top of the grid, so we need to take the notes in reverse order from the grid.
+                float time = firstNoteTime + beatLength * (float)BeatsPerNoteUpDown.Value * (gridLength-i-1); //index 0 is at the top of the grid, so we need to take the notes in reverse order from the grid.
                 for (int j = 0; j < gridWidth; j++) //for each note in current row
                 {
                     if(noteGrid[j,i].Colour != 0) //if note is not transparent

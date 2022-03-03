@@ -76,7 +76,6 @@ namespace NEA
             browseFileDialog.ShowDialog();
             filePathLoaded = browseFileDialog.FileName;
             FileLoadedLabel.Text = Path.GetFileName(browseFileDialog.FileName);
-
         }
 
         private void ExportButton_Click(object sender, EventArgs e)
@@ -110,6 +109,9 @@ namespace NEA
         #region Export
 
         private void Export()
+        /* Deserialises the .srtb file, converts noteGrid buttons into srtb notes, reserialises the srtb and replaces the text in the .srtb file.
+         * 
+         */
         {
             string file;
             using (StreamReader sr = new StreamReader(filePathLoaded))
@@ -118,8 +120,10 @@ namespace NEA
                 sr.Close();
             }
             srtbFile srtbFile = JsonConvert.DeserializeObject<srtbFile>(file);
-            SO_TrackData trackData = JsonConvert.DeserializeObject<SO_TrackData>(srtbFile.largeStringValuesContainer.values[DifficultyBox.SelectedIndex + 1].val); //deserialises the selected difficulties TrackData from the srtb object
-            SO_ClipInfo clipInfo = JsonConvert.DeserializeObject<SO_ClipInfo>(srtbFile.largeStringValuesContainer.values[6].val); //Deserialises the ClipInfo from the srtb object
+            //deserialises the selected difficulties TrackData from the srtb object
+            SO_TrackData trackData = JsonConvert.DeserializeObject<SO_TrackData>(srtbFile.largeStringValuesContainer.values[DifficultyBox.SelectedIndex + 1].val);
+            //Deserialises the ClipInfo from the srtb object
+            SO_ClipInfo clipInfo = JsonConvert.DeserializeObject<SO_ClipInfo>(srtbFile.largeStringValuesContainer.values[6].val);
 
             //gather user inputs from form controls
             decimal firstBeat = CurrentBeatUpDown.Value;
@@ -147,11 +151,15 @@ namespace NEA
         }
 
         private float[] FindTimeOfBeat(float beatToFind, SO_ClipInfo clipInfo)
+        //Takes the beat to find and the clipinfo, returns an array of floats length 2 containing the time value of the beat given in index 0, and the time per beat on that beat in index 1.
         {
             bpmMarker[] bpmMarkers = clipInfo.bpmMarkers; //for legibility
             int startingBeat = clipInfo.timeSignatureMarkers[0].startingBeat;
-            float beat = startingBeat < 0 ? startingBeat * -1 : 0; //Some charts may have a time signature marker before the first bpm marker, so beat 0 will come earlier, this needs to be accounted for, but only if startingbeat is less than 0.
+
+            //Some charts may have a time signature marker before the first bpm marker, so beat 0 will come earlier, this needs to be accounted for, but only if startingbeat is less than 0.
+            float beat = startingBeat < 0 ? startingBeat * -1 : 0; 
             float bufferTime = startingBeat < 0 ? startingBeat * -1 * bpmMarkers[0].beatLength : 0;
+
             bool beatExceeded = false;
             int i = 0;
             if (bpmMarkers.Length > 1)
@@ -164,7 +172,8 @@ namespace NEA
                 }
                 i--; // is incremented by 1 after last iteration for loop, need to decrement it again.
             }
-            float[] values = new float[2] { bpmMarkers[i].clipTime + bufferTime + (beatToFind - beat) * bpmMarkers[i].beatLength, bpmMarkers[i].beatLength }; //2nd value is the beat length, which is needed for AddNewNotes.
+            //2nd value is the beat length, which is needed for AddNewNotes.
+            float[] values = new float[2] { bpmMarkers[i].clipTime + bufferTime + (beatToFind - beat) * bpmMarkers[i].beatLength, bpmMarkers[i].beatLength }; 
             return values; // time = time of current marker + distance in beats from beat * time per beat
         }
 
@@ -188,7 +197,8 @@ namespace NEA
         {
             for (int i = gridLength-1; i >= 0; i--) //for each row
             {
-                float time = firstNoteTime + beatLength * (float)BeatsPerNoteUpDown.Value * (gridLength-i-1); //index 0 is at the top of the grid, so we need to take the notes in reverse order from the grid.
+                //index 0 is at the top of the grid, so we need to take the notes in reverse order from the grid.
+                float time = firstNoteTime + beatLength * (float)BeatsPerNoteUpDown.Value * (gridLength-i-1);
                 for (int j = 0; j < gridWidth; j++) //for each note in current row
                 {
                     if(noteGrid[j,i].Colour != 0) //if note is not transparent
@@ -213,6 +223,7 @@ namespace NEA
         }
 
         private int FindColumn(int j)
+        //Takes the index of a NoteButton[,] column and returns the .srtb equivalent column value
         {
             return (j - gridWidth / 2)*-1; //needs to be horizontally flipped for some reason
         }
